@@ -12,12 +12,15 @@
     @if ($needsOnboarding)
         <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <p class="font-semibold">Finish Stripe onboarding</p>
-            <p class="mt-1">These organisers cannot accept payments yet. Complete their Stripe Connect setup before publishing events.</p>
+            <p class="mt-1">
+                Payments for these organisers settle in the platform Stripe account until their
+                Connect setup is complete. Connect Stripe so funds reach them directly.
+            </p>
             <div class="mt-2 flex flex-wrap gap-2">
                 @foreach ($organisers->filter(fn ($organiser) => ! $organiser->stripeReady()) as $organiser)
                     <a href="{{ route('admin.organisers.stripe', $organiser) }}"
                        class="rounded-md border border-amber-300 bg-white px-2.5 py-1 text-xs font-medium text-amber-900 hover:bg-amber-100">
-                        {{ $organiser->name }} &rarr;
+                        {{ $organiser->name }}: Connect Stripe &rarr;
                     </a>
                 @endforeach
             </div>

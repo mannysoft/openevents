@@ -55,7 +55,7 @@ erDiagram
 | `name`, `slug`, `email`, `phone`, `about`, `logo_path` | strings/text | Public identity |
 | `currency_code` | `char(3)` | Default currency for new events |
 | `timezone` | string | Default event timezone |
-| `stripe_account_id` | string, nullable, indexed | Connected account id (`acct_...`) |
+| `stripe_account_id` | string, nullable, indexed | Connected account id (`acct_...`); orders charge the platform when null |
 | `stripe_charges_enabled` | boolean | Set from `configuration.merchant.capabilities.card_payments.status` |
 | `stripe_details_submitted` | boolean | No outstanding `currently_due` requirements |
 | `stripe_onboarded_at` | timestamp, nullable | First time both flags became true |

@@ -28,6 +28,7 @@ class RefundServiceTest extends TestCase
             'total' => $total,
             'currency_code' => 'GBP',
             'stripe_payment_intent_id' => 'pi_paid_1',
+            'stripe_account_id' => $organiser->stripe_account_id,
             'application_fee_amount' => $fee,
             'paid_at' => now(),
         ]);
@@ -46,6 +47,34 @@ class RefundServiceTest extends TestCase
         $this->assertSame(10000, $request['params']['amount']);
         $this->assertTrue(filter_var($request['params']['refund_application_fee'], FILTER_VALIDATE_BOOLEAN));
         $this->assertTrue(filter_var($request['params']['reverse_transfer'], FILTER_VALIDATE_BOOLEAN));
+    }
+
+    public function test_platform_account_charges_are_refunded_without_reversing_a_transfer(): void
+    {
+        $organiser = Organiser::factory()->create();
+        $event = Event::factory()->live()->create(['organiser_id' => $organiser->id]);
+        $order = Order::factory()->create([
+            'event_id' => $event->id,
+            'organiser_id' => $organiser->id,
+            'status' => OrderStatus::Completed,
+            'total' => 10000,
+            'currency_code' => 'GBP',
+            'stripe_payment_intent_id' => 'pi_platform_1',
+            'stripe_account_id' => null,
+            'application_fee_amount' => 500,
+            'paid_at' => now(),
+        ]);
+
+        $stripe = $this->fakeStripe();
+
+        app(RefundService::class)->refund($order);
+
+        $request = collect($stripe->requests)->firstWhere('path', '/v1/refunds');
+
+        $this->assertSame('pi_platform_1', $request['params']['payment_intent']);
+        $this->assertSame(10000, $request['params']['amount']);
+        $this->assertArrayNotHasKey('reverse_transfer', $request['params']);
+        $this->assertArrayNotHasKey('refund_application_fee', $request['params']);
     }
 
     public function test_partial_refunds_are_clamped_to_the_refundable_amount(): void

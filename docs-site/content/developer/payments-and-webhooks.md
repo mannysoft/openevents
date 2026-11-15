@@ -38,8 +38,14 @@ sequenceDiagram
 
 ## Creating the PaymentIntent
 
-`CheckoutService::createPaymentIntent(Order $order)` refuses when
-`! $order->organiser->stripeReady()`. It then calls `paymentIntents->create` with:
+`CheckoutService::createPaymentIntent(Order $order)` sends a **destination charge** when
+`$order->organiser->stripeReady()`. When the organiser has no connected account (or cannot
+take charges yet), it charges the **platform account configured in `.env`** instead: no
+`transfer_data` and no `application_fee_amount`, so the money stays in the platform balance
+and the organiser is settled outside Stripe. `orders.stripe_account_id` is `null` for those
+orders, which is how refunds know there is no transfer to reverse.
+
+It calls `paymentIntents->create` with:
 
 | Parameter | Value |
 | --- | --- |

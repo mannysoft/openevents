@@ -32,7 +32,8 @@
         <div class="mb-6 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <p class="font-medium">Stripe is not connected for {{ $organiser->name }}.</p>
             <p class="mt-1">
-                You can prepare this event now, but it cannot be published until Stripe onboarding is complete.
+                This event can still be published and sell tickets, but payments will settle in the
+                platform Stripe account until onboarding is complete.
                 <a href="{{ route('admin.organisers.stripe', $organiser) }}" wire:navigate class="font-medium underline">Open Stripe settings</a>
             </p>
         </div>

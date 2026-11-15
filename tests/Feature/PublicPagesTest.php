@@ -184,15 +184,19 @@ class PublicPagesTest extends TestCase
         $this->assertSame(OrderStatus::Completed, Order::first()->status);
     }
 
-    public function test_checkout_is_blocked_when_the_organiser_cannot_take_payments(): void
+    public function test_checkout_continues_when_the_organiser_cannot_take_payments(): void
     {
-        $this->organiser->update(['stripe_charges_enabled' => false]);
+        $this->organiser->update([
+            'stripe_account_id' => null,
+            'stripe_charges_enabled' => false,
+            'stripe_details_submitted' => false,
+        ]);
 
         Livewire::test(Checkout::class, ['event' => $this->event])
             ->call('increment', $this->ticket->id)
             ->call('continueToDetails')
-            ->assertHasErrors('quantities')
-            ->assertSet('step', 1);
+            ->assertHasNoErrors()
+            ->assertSet('step', 2);
     }
 
     public function test_confirmation_and_ticket_pages_render_for_paid_orders(): void

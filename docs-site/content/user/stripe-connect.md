@@ -29,7 +29,7 @@ Stripe's onboarding runs on Stripe's own site. When you finish, you come back to
 | Row | Meaning |
 | --- | --- |
 | Account ID | Stripe's identifier for this organiser's connected account. |
-| Charges enabled | **Yes** means the organiser can take payments. This is what publishing checks. |
+| Charges enabled | **Yes** means sales transfer straight to the organiser's account. |
 | Details submitted | Whether Stripe has everything it needs from you yet. |
 | Onboarded | When the account first became ready, or a dash if not yet. |
 
@@ -55,7 +55,7 @@ If Stripe has restricted the account, a red banner explains why. In that case, o
 Onboarding links are single use and expire. If you open an old one, Stripe sends you back to the **Stripe Connect** screen with the message *Your onboarding link expired, please start again.* Select **Continue onboarding** to get a fresh link.
 
 :::warning
-An event cannot be published, and checkout stays closed, until **Charges enabled** reads **Yes**. Until then the event form shows a Stripe warning, and buyers see *This organiser is not accepting payments yet.*
+Until **Charges enabled** reads **Yes**, the platform takes payments on its own Stripe account and the organiser is settled outside Stripe. Publishing and checkout are not blocked: the event form shows a Stripe reminder so it is clear where the money is going.
 :::
 
 ## How money moves
@@ -67,5 +67,5 @@ An event cannot be published, and checkout stays closed, until **Charges enabled
 Refunds reverse the transfer and return the platform's fee proportionally. See [Orders and refunds](orders-and-refunds.md) and [Payouts and earnings](payouts-and-earnings.md).
 
 :::tip
-After finishing onboarding, always select **Refresh status** before publishing. Stripe sometimes takes a moment to mark the account as ready.
+After finishing onboarding, always select **Refresh status** before taking payments. Stripe sometimes takes a moment to mark the account as ready.
 :::

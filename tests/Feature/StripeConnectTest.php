@@ -215,13 +215,13 @@ class StripeConnectTest extends TestCase
             ->assertSee('Stripe is reviewing this');
     }
 
-    public function test_events_cannot_be_published_until_stripe_is_ready(): void
+    public function test_events_can_be_published_before_stripe_onboarding_finishes(): void
     {
         $user = User::factory()->create();
         $organiser = Organiser::factory()->create(['user_id' => $user->id]);
         $event = Event::factory()->create(['organiser_id' => $organiser->id]);
 
-        $this->assertFalse($user->can('publish', $event));
+        $this->assertTrue($user->can('publish', $event));
 
         $organiser->forceFill([
             'stripe_account_id' => 'acct_ready',

@@ -50,7 +50,7 @@ queue is `sync`, queued mail and `SendAttendeeMessages` run inline during tests.
 | `Feature/OrderServiceTest` | Reservation with attendees, per-order limits, sold out, draft events, discounts, completion idempotency, cancellation, check-in rules |
 | `Feature/CheckoutServiceTest` | Destination charge parameters, 5% fee, per-organiser fee override, refusal when not connected |
 | `Feature/StripeWebhookTest` | Success idempotency, failure cancellation, refund sync, `account.updated` re-read and failure tolerance, unhandled types, single confirmation email |
-| `Feature/StripeConnectTest` | v2 account creation/idempotency, account links, status and requirement sync, v1 login link, missing requirements, requirement buckets, admin page, publish gating |
+| `Feature/StripeConnectTest` | v2 account creation/idempotency, account links, status and requirement sync, v1 login link, missing requirements, requirement buckets, admin page, publish policy, platform-account fallback |
 | `Feature/RefundServiceTest` | Full refund with transfer reversal, partial clamping, no double refund, `syncRefunded` effects |
 | `Feature/PublicPagesTest` | Event index visibility, event page, draft 404, organiser page, checkout reservation and intent, required details, discount, free orders, unready organiser, confirmation/ticket pages, unpaid tickets, Stripe failure |
 | `Feature/AdminPagesTest` | Every admin page renders for the owner, other organisers are rejected, missing records 404 |

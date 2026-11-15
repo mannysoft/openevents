@@ -35,12 +35,18 @@ class RefundService
             ]);
         }
 
-        $refund = $this->stripe->refunds->create([
+        $payload = [
             'payment_intent' => $order->stripe_payment_intent_id,
             'amount' => $amount,
-            'refund_application_fee' => $order->application_fee_amount > 0,
-            'reverse_transfer' => true,
-        ], [
+        ];
+
+        // Platform-account charges have no transfer or application fee to reverse.
+        if ($order->stripe_account_id !== null) {
+            $payload['reverse_transfer'] = true;
+            $payload['refund_application_fee'] = $order->application_fee_amount > 0;
+        }
+
+        $refund = $this->stripe->refunds->create($payload, [
             'idempotency_key' => sprintf(
                 'refund-%s-%d-%d',
                 $order->reference,

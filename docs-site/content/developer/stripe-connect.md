@@ -100,11 +100,13 @@ v2 account ids.
 | `stripe_details_submitted` | No `requirements.entries` with `awaiting_action_from = 'user'` and deadline `currently_due` or `past_due`; keeps the previous value when `requirements` is absent |
 | `stripe_onboarded_at` | Set the first time both are true, cleared if either becomes false |
 
-`Organiser::stripeReady()` is `stripe_account_id !== null && stripe_charges_enabled`. It gates:
+`Organiser::stripeReady()` is `stripe_account_id !== null && stripe_charges_enabled`. It
+decides where money goes:
 
-- `EventPolicy::publish` and `Events\Form::publish`;
-- `Checkout::continueToDetails`;
-- `CheckoutService::createPaymentIntent`, which throws a validation error if not ready.
+- `CheckoutService::createPaymentIntent` sends a destination charge to the connected account
+  when ready, and charges the platform account from `.env` when not;
+- `RefundService` only reverses a transfer and the application fee for destination charges;
+- publishing and checkout are **not** gated, so an event can sell before onboarding finishes.
 
 `stripe_details_submitted` is informational; readiness only depends on card payments being
 active.
@@ -140,7 +142,7 @@ Stripe enables the capability after onboarding and `account.updated` triggers a 
 
 `tests/Feature/StripeConnectTest.php` covers account creation and idempotency, v2 account
 links, capability/requirement syncing, the v1 login link, the missing-requirements case,
-requirement bucketing, the admin page and publish gating. It uses
+requirement bucketing, the admin page and the platform-account fallback. It uses
 `Tests\Support\FakeStripeHttpClient`; no network or keys are required.
 
 For organiser-facing instructions, see [Stripe Connect](../user/stripe-connect.md).

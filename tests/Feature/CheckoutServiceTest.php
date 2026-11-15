@@ -7,7 +7,6 @@ use App\Models\Order;
 use App\Models\Organiser;
 use App\Services\Stripe\CheckoutService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class CheckoutServiceTest extends TestCase
@@ -66,21 +65,55 @@ class CheckoutServiceTest extends TestCase
         $this->assertSame(200, $request['params']['application_fee_amount']);
     }
 
-    public function test_it_refuses_to_charge_when_the_organiser_is_not_connected(): void
+    public function test_it_falls_back_to_the_platform_account_when_the_organiser_is_not_connected(): void
     {
         $organiser = Organiser::factory()->create();
         $event = Event::factory()->live()->create(['organiser_id' => $organiser->id]);
         $order = Order::factory()->create([
             'event_id' => $event->id,
             'organiser_id' => $organiser->id,
-            'total' => 1000,
+            'total' => 10000,
             'currency_code' => 'GBP',
         ]);
 
-        $this->fakeStripe();
+        $stripe = $this->fakeStripe();
 
-        $this->expectException(ValidationException::class);
+        $intent = app(CheckoutService::class)->createPaymentIntent($order);
+
+        $request = collect($stripe->requests)->firstWhere('path', '/v1/payment_intents');
+
+        $this->assertSame(10000, $request['params']['amount']);
+        $this->assertArrayNotHasKey('application_fee_amount', $request['params']);
+        $this->assertArrayNotHasKey('transfer_data', $request['params']);
+
+        $order->refresh();
+        $this->assertSame($intent->id, $order->stripe_payment_intent_id);
+        $this->assertNull($order->stripe_account_id);
+        // Still recorded so the earnings report shows what the platform retains.
+        $this->assertSame(500, $order->application_fee_amount);
+    }
+
+    public function test_it_falls_back_to_the_platform_account_when_the_connected_account_cannot_take_charges(): void
+    {
+        $organiser = Organiser::factory()->create([
+            'stripe_account_id' => 'acct_pending',
+            'stripe_charges_enabled' => false,
+        ]);
+        $event = Event::factory()->live()->create(['organiser_id' => $organiser->id]);
+        $order = Order::factory()->create([
+            'event_id' => $event->id,
+            'organiser_id' => $organiser->id,
+            'total' => 2000,
+            'currency_code' => 'GBP',
+        ]);
+
+        $stripe = $this->fakeStripe();
 
         app(CheckoutService::class)->createPaymentIntent($order);
+
+        $request = collect($stripe->requests)->firstWhere('path', '/v1/payment_intents');
+
+        $this->assertArrayNotHasKey('transfer_data', $request['params']);
+        $this->assertNull($order->fresh()->stripe_account_id);
     }
 }

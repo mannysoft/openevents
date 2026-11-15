@@ -31,6 +31,20 @@
         </div>
     </div>
 
+    @if (! $organiser->stripeReady())
+        <div class="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <p class="font-semibold">Stripe is not connected yet</p>
+            <p class="mt-1">
+                Events can still be published and sell tickets. Until onboarding is complete,
+                payments settle in the platform Stripe account instead of the organiser's.
+            </p>
+            <a href="{{ route('admin.organisers.stripe', $organiser) }}" wire:navigate
+               class="mt-3 inline-block rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-700">
+                Connect Stripe &rarr;
+            </a>
+        </div>
+    @endif
+
     @if ($events->isEmpty())
         <x-ui.card>
             <p class="text-sm text-slate-600">No events yet. Create your first event to start selling tickets.</p>

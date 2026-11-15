@@ -75,7 +75,7 @@ Connected accounts are created with the **Accounts v2** API (`/v2/core/accounts`
    stripe listen --forward-to localhost:8000/stripe/webhook
    ```
 
-3. In the dashboard, open an organiser → **Stripe** and complete Express onboarding. Events cannot be published, and checkout stays disabled, until the connected account's `card_payments` capability is `active`.
+3. In the dashboard, open an organiser → **Stripe** and complete Express onboarding. Until the connected account's `card_payments` capability is `active`, events can still be published and sold, but payments are taken on the platform account from `.env` and the organiser is settled outside Stripe.
 
 Accounts v2 nulls out `configuration` and `requirements` unless they are requested, so every read passes `include`. Requirement entries are shown in the admin panel with their v2 description, deadline bucket (`currently_due`/`past_due` vs `eventually_due`) and any error codes.
 

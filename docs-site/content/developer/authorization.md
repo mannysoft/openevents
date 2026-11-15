@@ -37,7 +37,7 @@ and looked up through the parent's relationship, which prevents cross-organiser 
 | `view` | `Event` | `event->organiser->user_id === user->id` |
 | `update` | `Event` | Same |
 | `delete` | `Event` | Same |
-| `publish` | `Event` | Owner **and** `event->organiser->stripeReady()` |
+| `publish` | `Event` | `event->organiser->user_id === user->id` |
 | `view` | `Order` | `order->organiser->user_id === user->id` |
 | `refund` | `Order` | Same |
 | `view` | `Attendee` | `attendee->event->organiser->user_id === user->id` |
@@ -47,9 +47,10 @@ There are no `create` abilities; a new organiser is always created for `auth()->
 new event, ticket or question is always created through an already-authorised organiser or
 event.
 
-`publish` is the only ability with a non-ownership condition. `Events\Form::publish` also
-performs an early `stripeReady()` check with a flash message, then calls
-`Gate::authorize('publish', $this->event)`, so both the UI and the policy enforce readiness.
+Publishing is not gated on Stripe: an event can go live before the organiser finishes
+onboarding, in which case `CheckoutService` charges the platform account. `Events\Form::publish`
+authorises and flashes a different message so the organiser knows payments settle in the
+platform account.
 
 ## Where checks run
 

@@ -6,6 +6,7 @@
         </div>
 
         <div class="flex items-center gap-3 text-sm">
+            <a href="{{ route('admin.organisers.index') }}" wire:navigate class="text-slate-600 hover:text-slate-900">Back to organisers</a>
             <a href="{{ route('admin.events.index', $organiser) }}" wire:navigate class="text-slate-600 hover:text-slate-900">Events</a>
             <a href="{{ route('admin.organisers.edit', $organiser) }}" wire:navigate class="text-slate-600 hover:text-slate-900">Edit organiser</a>
         </div>
@@ -73,7 +74,45 @@
                     </button>
                 @endif
             </div>
+
+            <p class="mt-4 text-sm text-slate-500">
+                Status updates automatically when Stripe reports a change. Use
+                <span class="font-medium text-slate-700">Refresh status</span> if the information
+                looks stale, for example after finishing onboarding in another tab.
+            </p>
         </x-ui.card>
+
+        @if (! $organiser->stripe_account_id)
+            <x-ui.card title="How onboarding works">
+                <ol class="space-y-3 text-sm text-slate-600">
+                    <li>
+                        <span class="font-medium text-slate-900">1. Connect Stripe.</span>
+                        A Stripe Express account is created for {{ $organiser->name }}. Nothing is
+                        charged at this point.
+                    </li>
+                    <li>
+                        <span class="font-medium text-slate-900">2. Complete Stripe's form.</span>
+                        On Stripe's site you provide business details, a bank account for payouts
+                        and identity documents for the account representative.
+                    </li>
+                    <li>
+                        <span class="font-medium text-slate-900">3. Come back here.</span>
+                        When card payments are active, sales transfer to this organiser's account.
+                        Until then, events can still sell tickets and the platform holds the money
+                        for the organiser.
+                    </li>
+                </ol>
+            </x-ui.card>
+        @elseif (! $organiser->stripeReady())
+            <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                <p class="font-semibold">Stripe still needs information</p>
+                <p class="mt-1">
+                    Card payments are not active yet, so events cannot be published and checkout
+                    stays disabled. Continue onboarding to supply the outstanding requirements,
+                    then refresh the status.
+                </p>
+            </div>
+        @endif
 
         @if ($organiser->stripe_account_id)
             <x-ui.card title="Outstanding requirements">

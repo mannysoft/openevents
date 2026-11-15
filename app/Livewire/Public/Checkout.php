@@ -70,12 +70,6 @@ class Checkout extends Component
 
     public function continueToDetails(): void
     {
-        if (! $this->event->organiser->stripeReady()) {
-            $this->addError('quantities', 'This organiser is not accepting payments yet.');
-
-            return;
-        }
-
         $lines = $this->selectedLines();
 
         $this->buildAttendeeSlots($lines);

@@ -59,7 +59,7 @@
         </ul>
 
         <div class="mt-5">
-            @if ($event->organiser->stripeReady() && $event->tickets->contains(fn ($ticket) => $ticket->isOnSale()))
+            @if ($event->tickets->contains(fn ($ticket) => $ticket->isOnSale()))
                 <a href="{{ route('checkout', $event) }}" class="block w-full rounded-md bg-slate-900 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-slate-700" wire:navigate>
                     Get tickets
                 </a>

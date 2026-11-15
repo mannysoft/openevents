@@ -58,10 +58,18 @@
                            class="text-slate-600 hover:text-slate-900 hover:underline">
                             Edit
                         </a>
-                        <a href="{{ route('admin.organisers.stripe', $organiser) }}" wire:navigate
-                           class="text-slate-600 hover:text-slate-900 hover:underline">
-                            Stripe
-                        </a>
+
+                        @if ($organiser->stripeReady())
+                            <a href="{{ route('admin.organisers.stripe', $organiser) }}" wire:navigate
+                               class="ms-auto text-slate-600 hover:text-slate-900 hover:underline">
+                                Stripe settings
+                            </a>
+                        @else
+                            <a href="{{ route('admin.organisers.stripe', $organiser) }}" wire:navigate
+                               class="ms-auto rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-700">
+                                Connect Stripe
+                            </a>
+                        @endif
                     </div>
                 </x-ui.card>
             @endforeach

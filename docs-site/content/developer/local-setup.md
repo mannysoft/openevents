@@ -71,8 +71,9 @@ php artisan serve
 | Event | "Demo Conference 2026", status `draft` |
 | Tickets | "General admission" at `2500` minor units, "VIP" at `7500` minor units |
 
-The event stays a draft until the organiser completes Stripe onboarding, because publishing
-requires `Organiser::stripeReady()`. See [Stripe Connect](stripe-connect.md).
+The event starts as a draft. Publishing does not require Stripe onboarding, but until the
+organiser connects an account, sales are taken on the platform account from `.env`. See
+[Stripe Connect](stripe-connect.md).
 
 ## Frontend assets
 

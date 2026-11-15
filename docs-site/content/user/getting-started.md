@@ -64,14 +64,15 @@ Once the event is live and listed publicly, it appears at **/events**, on your o
 
 ## A checklist before you share the link
 
-- Stripe shows **Charges enabled: Yes**.
+- Stripe shows **Charges enabled: Yes** — without it the event still sells, but money
+  settles in the platform account instead of the organiser's.
 - The event status badge reads **Live**.
 - At least one ticket is **On sale** and not hidden.
 - The event is in the future — past events drop off the public listing.
 - **Show this event on the public site** is ticked.
 
 :::note[Exploring a demo install]
-If your platform was set up with the demo data, sign in with `demo@example.com` and the password `password`. You will see the organiser **Demo Events Ltd**, a draft event **Demo Conference 2026**, and two tickets: **General admission** at £25 and **VIP** at £75. The demo organiser has no Stripe account, so the event cannot be published until you connect one.
+If your platform was set up with the demo data, sign in with `demo@example.com` and the password `password`. You will see the organiser **Demo Events Ltd**, a draft event **Demo Conference 2026**, and two tickets: **General admission** at £25 and **VIP** at £75. The demo organiser has no Stripe account, so publishing works but payments settle in the platform account until you connect one.
 :::
 
 If you are the person running the platform rather than an organiser, the [local setup guide](../developer/local-setup.md) covers installation.

@@ -152,16 +152,13 @@ class Form extends Component
             return null;
         }
 
-        if (! $this->organiser->stripeReady()) {
-            session()->flash('error', 'Connect Stripe for this organiser before publishing — you cannot take payments until onboarding is complete.');
-
-            return $this->redirect(route('admin.events.edit', [$this->organiser, $this->event]), navigate: true);
-        }
-
         Gate::authorize('publish', $this->event);
 
         $this->event->update(['status' => EventStatus::Live]);
-        session()->flash('status', 'Event published.');
+
+        session()->flash('status', $this->organiser->stripeReady()
+            ? 'Event published.'
+            : 'Event published. Payments settle in the platform Stripe account until this organiser connects Stripe.');
 
         return $this->redirect(route('admin.events.edit', [$this->organiser, $this->event]), navigate: true);
     }

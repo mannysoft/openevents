@@ -123,7 +123,7 @@ public function export(User $user, Event $event): bool
 ```
 
 No registration is needed: `Gate::guessPolicyNamesUsing` maps `App\Models\Event` to
-`App\Policies\EventPolicy`. Non-ownership conditions belong here too, as `publish()` does.
+`App\Policies\EventPolicy`. Non-ownership conditions belong here too.
 Call `Gate::authorize('export', $this->event)` before the work, or `@can('export', $event)` in
 Blade, and test both sides with `actingAs` (`assertOk()` / `assertForbidden()`).
 `AdminPagesTest` and `AttendeeExportTest` show the pattern.

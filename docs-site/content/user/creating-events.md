@@ -47,7 +47,7 @@ Each event gets a slug generated from its title — *Demo Conference 2026* becom
 
 ## Publishing and unpublishing
 
-- **Publish** sets the event live. It is refused with the message *Connect Stripe for this organiser before publishing* while the organiser's Stripe account is not ready.
+- **Publish** sets the event live. Publishing works before the organiser connects Stripe; until then the event form warns that payments settle in the platform Stripe account.
 - **Unpublish** returns a live event to draft after a confirmation prompt. Tickets and orders are untouched; the public page simply stops working.
 
 A published event only appears publicly when **Show this event on the public site** is ticked and the start date is still in the future. Draft and unlisted events return a not-found page at their address; past events stay reachable for anyone with the link but drop out of the public listings.
@@ -57,5 +57,5 @@ A published event only appears publicly when **Show this event on the public sit
 Select **Delete event** at the bottom of the form and confirm. The event disappears from the dashboard and its public page stops working. This is intended for events created by mistake — check [Orders and refunds](orders-and-refunds.md) before deleting anything that has sold tickets.
 
 :::tip
-Publish once the Stripe status on the organiser shows **Stripe connected**, add at least one ticket that is on sale, then open the public page from **View public page** to check it looks right before sharing it.
+Add at least one ticket that is on sale, open the public page from **View public page** to check it looks right, then share it. Connect Stripe whenever you want sales to transfer to the organiser directly.
 :::

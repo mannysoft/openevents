@@ -90,15 +90,17 @@ class Form extends Component
 
         if ($this->organiser?->exists) {
             $this->organiser->update($attributes);
-            $status = 'Organiser updated.';
-        } else {
-            $this->organiser = Organiser::create($attributes + ['user_id' => auth()->id()]);
-            $status = 'Organiser created.';
+
+            session()->flash('status', 'Organiser updated.');
+
+            return $this->redirect(route('admin.events.index', $this->organiser), navigate: true);
         }
 
-        session()->flash('status', $status);
+        $this->organiser = Organiser::create($attributes + ['user_id' => auth()->id()]);
 
-        return $this->redirect(route('admin.events.index', $this->organiser), navigate: true);
+        session()->flash('status', 'Organiser created. Connect Stripe so this organiser can take payments.');
+
+        return $this->redirect(route('admin.organisers.stripe', $this->organiser), navigate: true);
     }
 
     public function render()

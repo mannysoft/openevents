@@ -6,21 +6,19 @@ description: Fix the most common problems with publishing events, selling ticket
 
 Most problems come down to an event not being published, a ticket not being on sale, or Stripe onboarding not being finished. Work through the entry that matches what you see.
 
-## I cannot publish my event
+## Sales are not reaching the organiser's account
 
-**Message:** *Connect Stripe for this organiser before publishing — you cannot take payments until onboarding is complete.*
+Publishing and checkout work without a connected Stripe account: the platform takes the
+payment on its own Stripe account instead.
 
-Open **Organisers → your organiser → Stripe** and check **Charges enabled**. If it says **No**, select **Continue onboarding**, finish Stripe's steps, then select **Refresh status**. Publish again once the badge on the organiser reads **Stripe connected**.
-
-## Checkout says the organiser is not accepting payments
-
-**Message for buyers:** *This organiser is not accepting payments yet.*
-
-This is the same cause: the organiser's Stripe account is not ready. Publishing is blocked until it is, so this normally means an event was live before the Stripe account was restricted. Resolve the outstanding requirements on the Stripe page.
+Open **Organisers → your organiser → Stripe** and check **Charges enabled**. If it says
+**No**, select **Continue onboarding**, finish Stripe's steps, then select **Refresh status**.
+Once the badge on the organiser reads **Stripe connected**, new sales transfer directly to
+the organiser.
 
 ## The public page says tickets are not on sale
 
-The **Get tickets** button needs two things: a ready Stripe account, and at least one ticket that is on sale.
+The **Get tickets** button appears as soon as at least one ticket is on sale.
 
 Check each ticket on the **Tickets** tab:
 

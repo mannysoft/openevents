@@ -24,6 +24,6 @@ class EventPolicy
 
     public function publish(User $user, Event $event): bool
     {
-        return $event->organiser->user_id === $user->id && $event->organiser->stripeReady();
+        return $event->organiser->user_id === $user->id;
     }
 }
