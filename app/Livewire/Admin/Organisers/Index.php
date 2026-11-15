@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Organisers;
 
+use App\Models\Organiser;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -10,6 +11,14 @@ class Index extends Component
 {
     public function render()
     {
-        return view('livewire.admin.organisers.index');
+        $organisers = Organiser::query()
+            ->where('user_id', auth()->id())
+            ->withCount('events')
+            ->orderBy('name')
+            ->get();
+
+        return view('livewire.admin.organisers.index', [
+            'organisers' => $organisers,
+        ])->title('Organisers');
     }
 }

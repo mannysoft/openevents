@@ -1,58 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Events
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A small, deliberately bare multi-organiser ticketing platform built on **Laravel 13** and **Livewire 4**.
 
-## About Laravel
+Organisers sign up, create events and tickets, and take payments through **their own Stripe account** using Stripe Connect (Express). The platform keeps a configurable application fee (5% by default) on each sale.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Organiser accounts with multiple organisers per login
+- Events with dates, venue, cover image, description and draft/live status
+- Ticket types with price, quantity, sales window and per-order limits
+- Public event pages and a Livewire checkout with Stripe Payment Element
+- Discount codes, custom attendee questions, attendee messaging
+- Orders, refunds, CSV/XLSX attendee exports and QR check-in
+- Earnings report showing gross, platform fee and net per event
+- Stripe Connect Express onboarding per organiser (`/dashboard/organisers/{organiser}/stripe`)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requirements
 
-## Learning Laravel
+- PHP 8.3+ (tested on 8.4)
+- Composer 2
+- Node 20+
+- MySQL 8 (or SQLite for local development)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Getting started
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+The seeder creates `demo@example.com` / `password` with a demo organiser, event and two tickets.
 
-## Contributing
+## Stripe Connect
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Payments run as **destination charges**: money is charged on the platform account and transferred to the organiser's connected account, with `application_fee_amount` retained by the platform.
 
-## Code of Conduct
+1. Set the platform keys in `.env`:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   ```env
+   STRIPE_KEY=pk_...
+   STRIPE_SECRET=sk_...
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   STRIPE_PLATFORM_FEE_PERCENT=5
+   ```
 
-## Security Vulnerabilities
+2. Forward webhooks locally:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   ```bash
+   stripe listen --forward-to localhost:8000/stripe/webhook
+   ```
 
-## License
+3. In the dashboard, open an organiser → **Stripe** and complete Express onboarding. Events cannot be published, and checkout stays disabled, until the connected account has `charges_enabled`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Handled webhook events: `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`, `charge.refunded`, `account.updated`.
+
+Refunds are sent with `reverse_transfer` and `refund_application_fee`, so the platform fee is returned proportionally. All money is stored as integer minor units.
+
+## Importing the legacy Attendize data
+
+The previous Attendize database can be imported once, read-only, into this app:
+
+```bash
+php artisan import:legacy --dry-run
+php artisan import:legacy --only=organisers,events,tickets
+php artisan import:legacy
+```
+
+Set `DB_DATABASE_LEGACY` (and `DB_DATABASE_LEGACY_LOUNGE` for Stripe account ids that lived on the old `clubs` table) first. Imports are idempotent and keyed on `legacy_id`.
+
+## Testing
+
+```bash
+php artisan test
+vendor/bin/pint --test
+npm run build
+```
+
+Feature tests cover Stripe Connect onboarding, destination charges and the 5% application fee, webhook idempotency, refunds, order lifecycle, check-in, and the Livewire admin screens. Stripe is faked at the HTTP layer (`tests/Support/FakeStripeHttpClient.php`), so no network or keys are needed.
+
+## Structure
+
+- `app/Livewire/Admin` – dashboard, organisers, events, tickets, orders, attendees, check-in, discounts, questions, payouts, messaging
+- `app/Livewire/Public` – event index, organiser page, event page, checkout, confirmation, ticket
+- `app/Services` – order lifecycle and Stripe Connect/checkout/refund services
+- `app/Models` – organiser, event, ticket, order, order item, attendee, discount code, question, answer, message log

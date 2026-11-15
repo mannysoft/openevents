@@ -112,8 +112,8 @@ class FakeStripeHttpClient implements ClientInterface
                 'object' => 'refund',
                 'payment_intent' => $params['payment_intent'] ?? null,
                 'amount' => $params['amount'] ?? 0,
-                'refund_application_fee' => (bool) ($params['refund_application_fee'] ?? false),
-                'reverse_transfer' => (bool) ($params['reverse_transfer'] ?? false),
+                'refund_application_fee' => filter_var($params['refund_application_fee'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'reverse_transfer' => filter_var($params['reverse_transfer'] ?? false, FILTER_VALIDATE_BOOLEAN),
                 'status' => 'succeeded',
             ];
 

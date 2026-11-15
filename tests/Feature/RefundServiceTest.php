@@ -44,8 +44,8 @@ class RefundServiceTest extends TestCase
 
         $this->assertSame('pi_paid_1', $request['params']['payment_intent']);
         $this->assertSame(10000, $request['params']['amount']);
-        $this->assertTrue($request['params']['refund_application_fee']);
-        $this->assertTrue($request['params']['reverse_transfer']);
+        $this->assertTrue(filter_var($request['params']['refund_application_fee'], FILTER_VALIDATE_BOOLEAN));
+        $this->assertTrue(filter_var($request['params']['reverse_transfer'], FILTER_VALIDATE_BOOLEAN));
     }
 
     public function test_partial_refunds_are_clamped_to_the_refundable_amount(): void
