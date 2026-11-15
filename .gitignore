@@ -14,10 +14,10 @@
 /.zed
 /auth.json
 /node_modules
-/docs/node_modules
-/docs/build
-/docs/.docusaurus
-/docs/.cache-loader
+/docs-site/node_modules
+/docs-site/build
+/docs-site/.docusaurus
+/docs-site/.cache-loader
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot
