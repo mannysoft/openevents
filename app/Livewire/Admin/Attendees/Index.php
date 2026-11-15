@@ -7,6 +7,7 @@ use App\Models\Attendee;
 use App\Models\Event;
 use App\Services\OrderService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Layout;
@@ -151,18 +152,18 @@ class Index extends Component
     }
 
     /**
-     * @return Builder<Attendee>
+     * @return HasMany<Attendee, $this>
      */
-    private function baseQuery(): Builder
+    private function baseQuery(): HasMany
     {
         return $this->event->attendees()
             ->whereHas('order', fn (Builder $query) => $query->where('status', 'completed'));
     }
 
     /**
-     * @return Builder<Attendee>
+     * @return HasMany<Attendee, $this>
      */
-    private function filteredQuery(): Builder
+    private function filteredQuery(): HasMany
     {
         return $this->baseQuery()
             ->with(['order', 'ticket'])

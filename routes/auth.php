@@ -14,4 +14,4 @@ Route::middleware('guest')->group(function () {
     Route::livewire('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
 
-Route::post('/logout', LogoutController::class)->middleware('auth')->name('logout');
+Route::post('/logout', [LogoutController::class, '__invoke'])->middleware('auth')->name('logout');

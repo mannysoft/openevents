@@ -8,8 +8,8 @@
 
     <x-admin.event-nav :event="$event" />
 
-    <div class="grid gap-6 xl:grid-cols-3">
-        <div class="xl:col-span-2">
+    <div class="grid gap-6">
+        <div>
             <x-ui.card title="Compose message">
                 <form wire:submit="send" class="space-y-4">
                     <div>
@@ -79,17 +79,27 @@
                 @if ($messageLogs->isEmpty())
                     <p class="text-sm text-slate-500">No messages sent for this event yet.</p>
                 @else
-                    <div class="space-y-3">
-                        @foreach ($messageLogs as $log)
-                            <div class="border-b border-slate-100 pb-3 last:border-0 last:pb-0">
-                                <p class="text-sm font-medium">{{ $log->subject }}</p>
-                                <p class="text-xs text-slate-500">
-                                    {{ number_format($log->recipients_count) }} recipients &middot;
-                                    {{ $log->user?->name ?? 'System' }} &middot;
-                                    {{ $log->sent_at?->format('d M Y, H:i') ?? '—' }}
-                                </p>
-                            </div>
-                        @endforeach
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200 text-sm">
+                            <thead>
+                                <tr class="text-left text-xs uppercase tracking-wide text-slate-500">
+                                    <th class="py-2 pr-4 font-medium">Subject</th>
+                                    <th class="py-2 pr-4 text-right font-medium">Recipients</th>
+                                    <th class="py-2 pr-4 font-medium">Sent by</th>
+                                    <th class="py-2 font-medium">Sent at</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach ($messageLogs as $log)
+                                    <tr>
+                                        <td class="py-2 pr-4 font-medium">{{ $log->subject }}</td>
+                                        <td class="py-2 pr-4 text-right">{{ number_format($log->recipients_count) }}</td>
+                                        <td class="py-2 pr-4 text-slate-600">{{ $log->user?->name ?? 'System' }}</td>
+                                        <td class="py-2 text-slate-600">{{ $log->sent_at?->format('d M Y, H:i') ?? '—' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 @endif
             </x-ui.card>

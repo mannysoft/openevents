@@ -88,6 +88,10 @@ class Index extends Component
 
         $this->code = Str::upper(trim($this->code));
 
+        if ($this->quantity_available !== null && trim($this->quantity_available) === '') {
+            $this->quantity_available = null;
+        }
+
         $quantityUsed = $this->editingId !== null
             ? (int) $this->event->discountCodes()->whereKey($this->editingId)->value('quantity_used')
             : 0;

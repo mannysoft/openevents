@@ -101,10 +101,10 @@
                                     <span class="rounded-full px-2 py-0.5 text-xs font-medium {{ $badge }}">{{ $order->status->label() }}</span>
                                 </td>
                                 <td class="px-3 py-3 whitespace-nowrap text-slate-600">{{ $order->items_count }}</td>
-                                <td class="px-3 py-3 whitespace-nowrap font-medium">{{ \App\Support\Money::format($order->total, $order->currency_code) }}</td>
+                                <td class="px-3 py-3 whitespace-nowrap font-medium">{{ \App\Support\Money::format((int) $order->total, $order->currency_code) }}</td>
                                 <td class="px-3 py-3 whitespace-nowrap text-slate-600">{{ $order->paid_at?->format('j M Y, H:i') ?? '—' }}</td>
                                 <td class="px-3 py-3 whitespace-nowrap {{ $order->refunded_amount > 0 ? 'text-rose-600' : 'text-slate-400' }}">
-                                    {{ \App\Support\Money::format($order->refunded_amount, $order->currency_code) }}
+                                    {{ \App\Support\Money::format((int) $order->refunded_amount, $order->currency_code) }}
                                 </td>
                             </tr>
                         @endforeach

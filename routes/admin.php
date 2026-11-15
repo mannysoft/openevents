@@ -33,7 +33,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::livewire('/events/{event}/tickets', TicketsIndex::class)->name('admin.tickets.index');
     Route::livewire('/events/{event}/orders', OrdersIndex::class)->name('admin.orders.index');
     Route::livewire('/events/{event}/attendees', AttendeesIndex::class)->name('admin.attendees.index');
-    Route::livewire('/events/{event}/attendees/export/{format}', AttendeeExportController::class)->name('admin.attendees.export');
+    Route::get('/events/{event}/attendees/export/{format}', [AttendeeExportController::class, '__invoke'])->name('admin.attendees.export');
     Route::livewire('/events/{event}/check-in', Scanner::class)->name('admin.checkin.index');
     Route::livewire('/events/{event}/discounts', DiscountCodesIndex::class)->name('admin.discounts.index');
     Route::livewire('/events/{event}/questions', QuestionsIndex::class)->name('admin.questions.index');

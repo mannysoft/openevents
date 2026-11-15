@@ -6,6 +6,7 @@ use App\Models\Attendee;
 use App\Models\Event;
 use App\Services\OrderService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -125,9 +126,9 @@ class Scanner extends Component
     }
 
     /**
-     * @return Builder<Attendee>
+     * @return HasMany<Attendee, $this>
      */
-    private function validAttendees(): Builder
+    private function validAttendees(): HasMany
     {
         return $this->event->attendees()
             ->whereHas('order', fn (Builder $query) => $query->where('status', 'completed'))

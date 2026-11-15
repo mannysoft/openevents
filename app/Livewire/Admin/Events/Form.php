@@ -130,9 +130,10 @@ class Form extends Component
 
         if ($this->event?->exists) {
             $this->event->update($attributes);
+
             session()->flash('status', 'Event saved.');
 
-            return null;
+            return $this->redirect(route('admin.events.edit', [$this->organiser, $this->event]), navigate: true);
         }
 
         $this->event = $this->organiser->events()->create($attributes + [
@@ -145,34 +146,38 @@ class Form extends Component
         return $this->redirect(route('admin.events.edit', [$this->organiser, $this->event]), navigate: true);
     }
 
-    public function publish(): void
+    public function publish()
     {
         if (! $this->event?->exists) {
-            return;
+            return null;
         }
 
         if (! $this->organiser->stripeReady()) {
             session()->flash('error', 'Connect Stripe for this organiser before publishing — you cannot take payments until onboarding is complete.');
 
-            return;
+            return $this->redirect(route('admin.events.edit', [$this->organiser, $this->event]), navigate: true);
         }
 
         Gate::authorize('publish', $this->event);
 
         $this->event->update(['status' => EventStatus::Live]);
         session()->flash('status', 'Event published.');
+
+        return $this->redirect(route('admin.events.edit', [$this->organiser, $this->event]), navigate: true);
     }
 
-    public function unpublish(): void
+    public function unpublish()
     {
         if (! $this->event?->exists) {
-            return;
+            return null;
         }
 
         Gate::authorize('update', $this->event);
 
         $this->event->update(['status' => EventStatus::Draft]);
         session()->flash('status', 'Event unpublished and back in draft.');
+
+        return $this->redirect(route('admin.events.edit', [$this->organiser, $this->event]), navigate: true);
     }
 
     public function delete()

@@ -32,10 +32,12 @@ class StripeConnect extends Component
         } catch (ApiErrorException $e) {
             report($e);
             session()->flash('error', 'We could not reach Stripe to start onboarding. Please try again in a moment.');
+
+            return $this->redirect(route('admin.organisers.stripe', $this->organiser), navigate: true);
         }
     }
 
-    public function refresh(): void
+    public function refresh()
     {
         $service = app(ConnectService::class);
 
@@ -45,7 +47,7 @@ class StripeConnect extends Component
             report($e);
             session()->flash('error', 'We could not refresh your Stripe status. Please try again in a moment.');
 
-            return;
+            return $this->redirect(route('admin.organisers.stripe', $this->organiser), navigate: true);
         }
 
         $this->organiser->refresh();
@@ -54,6 +56,8 @@ class StripeConnect extends Component
         session()->flash('status', $this->organiser->stripeReady()
             ? 'Stripe is connected. You can now take payments for this organiser.'
             : 'Stripe status refreshed. Onboarding is not complete yet.');
+
+        return $this->redirect(route('admin.organisers.stripe', $this->organiser), navigate: true);
     }
 
     public function dashboard()
@@ -63,6 +67,8 @@ class StripeConnect extends Component
         } catch (ApiErrorException $e) {
             report($e);
             session()->flash('error', 'We could not open the Stripe dashboard. Please try again in a moment.');
+
+            return $this->redirect(route('admin.organisers.stripe', $this->organiser), navigate: true);
         }
     }
 

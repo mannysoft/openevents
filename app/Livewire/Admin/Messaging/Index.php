@@ -8,6 +8,7 @@ use App\Models\Attendee;
 use App\Models\Event;
 use App\Models\MessageLog;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -41,7 +42,12 @@ class Index extends Component
             'subject' => ['required', 'string', 'max:150'],
             'body' => ['required', 'string', 'max:5000'],
             'filter' => ['required', 'in:all,ticket,checked_in,not_checked_in'],
-            'ticketId' => ['nullable', 'integer', 'required_if:filter,ticket'],
+            'ticketId' => [
+                'exclude_unless:filter,ticket',
+                'required',
+                'integer',
+                Rule::exists('tickets', 'id')->where('event_id', $this->event->id),
+            ],
         ]);
 
         $recipients = $this->recipients();

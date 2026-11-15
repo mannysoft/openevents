@@ -57,39 +57,39 @@
                                             <div class="text-xs text-slate-400">Ticket deleted</div>
                                         @endif
                                     </td>
-                                    <td class="py-3 pr-3 whitespace-nowrap text-slate-600">{{ \App\Support\Money::format($item->unit_price, $currency) }}</td>
+                                    <td class="py-3 pr-3 whitespace-nowrap text-slate-600">{{ \App\Support\Money::format((int) $item->unit_price, $currency) }}</td>
                                     <td class="py-3 pr-3 whitespace-nowrap text-slate-600">{{ $item->quantity }}</td>
-                                    <td class="py-3 whitespace-nowrap text-right font-medium">{{ \App\Support\Money::format($item->total, $currency) }}</td>
+                                    <td class="py-3 whitespace-nowrap text-right font-medium">{{ \App\Support\Money::format((int) $item->total, $currency) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot class="border-t border-slate-200 text-sm">
                             <tr>
                                 <td colspan="3" class="py-2 pr-3 text-right text-slate-500">Subtotal</td>
-                                <td class="py-2 text-right">{{ \App\Support\Money::format($order->subtotal, $currency) }}</td>
+                                <td class="py-2 text-right">{{ \App\Support\Money::format((int) $order->subtotal, $currency) }}</td>
                             </tr>
                             @if ($order->discount_total > 0)
                                 <tr>
                                     <td colspan="3" class="py-2 pr-3 text-right text-slate-500">
                                         Discount{{ $order->discountCode ? ' ('.$order->discountCode->code.')' : '' }}
                                     </td>
-                                    <td class="py-2 text-right text-emerald-700">-{{ \App\Support\Money::format($order->discount_total, $currency) }}</td>
+                                    <td class="py-2 text-right text-emerald-700">-{{ \App\Support\Money::format((int) $order->discount_total, $currency) }}</td>
                                 </tr>
                             @endif
                             @if ($order->tax_total > 0)
                                 <tr>
                                     <td colspan="3" class="py-2 pr-3 text-right text-slate-500">Tax</td>
-                                    <td class="py-2 text-right">{{ \App\Support\Money::format($order->tax_total, $currency) }}</td>
+                                    <td class="py-2 text-right">{{ \App\Support\Money::format((int) $order->tax_total, $currency) }}</td>
                                 </tr>
                             @endif
                             <tr class="border-t border-slate-200">
                                 <td colspan="3" class="py-2 pr-3 text-right font-medium text-slate-900">Total</td>
-                                <td class="py-2 text-right font-semibold text-slate-900">{{ \App\Support\Money::format($order->total, $currency) }}</td>
+                                <td class="py-2 text-right font-semibold text-slate-900">{{ \App\Support\Money::format((int) $order->total, $currency) }}</td>
                             </tr>
                             @if ($order->refunded_amount > 0)
                                 <tr>
                                     <td colspan="3" class="py-2 pr-3 text-right text-slate-500">Refunded</td>
-                                    <td class="py-2 text-right text-rose-600">-{{ \App\Support\Money::format($order->refunded_amount, $currency) }}</td>
+                                    <td class="py-2 text-right text-rose-600">-{{ \App\Support\Money::format((int) $order->refunded_amount, $currency) }}</td>
                                 </tr>
                             @endif
                         </tfoot>
@@ -209,7 +209,7 @@
                     </div>
                     <div class="flex items-start justify-between gap-3">
                         <dt class="text-slate-500">Application fee</dt>
-                        <dd>{{ \App\Support\Money::format($order->application_fee_amount, $currency) }}</dd>
+                        <dd>{{ \App\Support\Money::format((int) $order->application_fee_amount, $currency) }}</dd>
                     </div>
                     <div class="flex items-start justify-between gap-3">
                         <dt class="text-slate-500">Net to organiser</dt>
@@ -218,12 +218,12 @@
                     <div class="flex items-start justify-between gap-3 border-t border-slate-200 pt-3">
                         <dt class="text-slate-500">Refunded</dt>
                         <dd class="{{ $order->refunded_amount > 0 ? 'font-medium text-rose-600' : '' }}">
-                            {{ \App\Support\Money::format($order->refunded_amount, $currency) }}
+                            {{ \App\Support\Money::format((int) $order->refunded_amount, $currency) }}
                         </dd>
                     </div>
                     <div class="flex items-start justify-between gap-3">
                         <dt class="text-slate-500">Refundable</dt>
-                        <dd>{{ \App\Support\Money::format($order->refundableMinor(), $currency) }}</dd>
+                        <dd>{{ \App\Support\Money::format((int) $order->refundableMinor(), $currency) }}</dd>
                     </div>
                 </dl>
             </x-ui.card>
@@ -235,7 +235,7 @@
             <div class="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl">
                 <h3 class="text-base font-semibold">Refund order {{ $order->reference }}</h3>
                 <p class="mt-1 text-sm text-slate-500">
-                    Refundable balance: <span class="font-medium text-slate-900">{{ \App\Support\Money::format($order->refundableMinor(), $currency) }}</span>
+                    Refundable balance: <span class="font-medium text-slate-900">{{ \App\Support\Money::format((int) $order->refundableMinor(), $currency) }}</span>
                 </p>
 
                 <form wire:submit="refund" class="mt-4 space-y-4">
