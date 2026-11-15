@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Demo Events Ltd',
         ]);
 
-        $event = Event::factory()->live()->create([
+        // Draft until the organiser completes Stripe Connect onboarding.
+        $event = Event::factory()->create([
             'organiser_id' => $organiser->id,
             'title' => 'Demo Conference 2026',
         ]);

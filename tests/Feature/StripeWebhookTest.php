@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use App\Enums\OrderStatus;
+use App\Mail\OrderConfirmation;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\Organiser;
-use App\Mail\OrderConfirmation;
 use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;

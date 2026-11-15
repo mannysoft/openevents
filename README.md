@@ -35,7 +35,7 @@ npm run build
 php artisan serve
 ```
 
-The seeder creates `demo@example.com` / `password` with a demo organiser, event and two tickets.
+The seeder creates `demo@example.com` / `password` with a demo organiser, a draft event and two tickets. Publish the event once the organiser has connected Stripe.
 
 ## Stripe Connect
 
