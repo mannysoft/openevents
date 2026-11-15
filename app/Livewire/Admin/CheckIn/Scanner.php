@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\CheckIn\Scanner;
+namespace App\Livewire\Admin\CheckIn;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Events\Index;
+namespace App\Livewire\Admin\Events;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

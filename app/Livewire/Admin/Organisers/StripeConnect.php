@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Organisers\StripeConnect;
+namespace App\Livewire\Admin\Organisers;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

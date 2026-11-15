@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Questions\Index;
+namespace App\Livewire\Admin\Questions;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Messaging\Index;
+namespace App\Livewire\Admin\Messaging;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

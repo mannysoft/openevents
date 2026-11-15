@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Organisers\Index;
+namespace App\Livewire\Admin\Organisers;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

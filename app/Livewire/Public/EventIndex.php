@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Public\EventIndex;
+namespace App\Livewire\Public;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

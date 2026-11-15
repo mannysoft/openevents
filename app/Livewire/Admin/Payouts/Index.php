@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Payouts\Index;
+namespace App\Livewire\Admin\Payouts;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;

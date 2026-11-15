@@ -6,14 +6,11 @@ use App\Models\Event;
 use App\Models\Organiser;
 use App\Models\Ticket;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     public function run(): void
     {
         $user = User::factory()->create([
