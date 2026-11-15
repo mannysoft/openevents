@@ -41,6 +41,8 @@ The seeder creates `demo@example.com` / `password` with a demo organiser, a draf
 
 Payments run as **destination charges**: money is charged on the platform account and transferred to the organiser's connected account, with `application_fee_amount` retained by the platform.
 
+Connected accounts are created with the **Accounts v2** API (`/v2/core/accounts`) and use the Express dashboard. Each organiser gets the `merchant` configuration (`card_payments`) and the `recipient` configuration (`stripe_balance.stripe_transfers`), so the same account can take charges and receive transfers. Because Stripe only allows an Express dashboard when the platform collects fees and carries loss liability, accounts are created with `defaults.responsibilities.fees_collector` and `losses_collector` set to `application` — the platform pays Stripe's processing fees and is liable for negative balances. Switch `dashboard` to `full` and set both responsibilities to `stripe` in `ConnectService` if Stripe should carry them instead.
+
 1. Set the platform keys in `.env`:
 
    ```env
@@ -48,6 +50,7 @@ Payments run as **destination charges**: money is charged on the platform accoun
    STRIPE_SECRET=sk_...
    STRIPE_WEBHOOK_SECRET=whsec_...
    STRIPE_PLATFORM_FEE_PERCENT=5
+   STRIPE_CONNECT_COUNTRY=GB
    ```
 
 2. Forward webhooks locally:
@@ -56,9 +59,11 @@ Payments run as **destination charges**: money is charged on the platform accoun
    stripe listen --forward-to localhost:8000/stripe/webhook
    ```
 
-3. In the dashboard, open an organiser → **Stripe** and complete Express onboarding. Events cannot be published, and checkout stays disabled, until the connected account has `charges_enabled`.
+3. In the dashboard, open an organiser → **Stripe** and complete Express onboarding. Events cannot be published, and checkout stays disabled, until the connected account's `card_payments` capability is `active`.
 
-Handled webhook events: `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`, `charge.refunded`, `account.updated`.
+Accounts v2 nulls out `configuration` and `requirements` unless they are requested, so every read passes `include`. Requirement entries are shown in the admin panel with their v2 description, deadline bucket (`currently_due`/`past_due` vs `eventually_due`) and any error codes.
+
+Handled webhook events: `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`, `charge.refunded`, `account.updated`. `account.updated` is still emitted for v2 accounts; the handler treats it as a signal and re-reads the account with the Accounts v2 API instead of trusting the v1 payload. Accounts v2 *thin* events are not subscribed to.
 
 Refunds are sent with `reverse_transfer` and `refund_application_fee`, so the platform fee is returned proportionally. All money is stored as integer minor units.
 

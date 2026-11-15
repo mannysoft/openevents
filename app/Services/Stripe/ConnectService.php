@@ -108,7 +108,12 @@ class ConnectService
     {
         $chargesEnabled = $this->capabilityStatus($account, self::CARD_PAYMENTS) === 'active';
         $requirements = data_get($account, 'requirements');
-        $detailsSubmitted = $requirements !== null && ! $this->hasOutstandingRequirements($account);
+
+        // Accounts v2 only returns requirements when they are included; treat an
+        // absent payload as "unknown" rather than clearing an onboarded account.
+        $detailsSubmitted = $requirements === null
+            ? (bool) $organiser->stripe_details_submitted
+            : ! $this->hasOutstandingRequirements($account);
 
         $organiser->forceFill([
             'stripe_charges_enabled' => $chargesEnabled,

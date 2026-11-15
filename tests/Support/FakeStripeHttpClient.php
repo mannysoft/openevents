@@ -34,6 +34,8 @@ class FakeStripeHttpClient implements ClientInterface
 
     public bool $failAccountRetrieve = false;
 
+    public bool $omitRequirements = false;
+
     private int $sequence = 0;
 
     public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1', $maxNetworkRetries = null)
@@ -159,7 +161,7 @@ class FakeStripeHttpClient implements ClientInterface
                     ],
                 ],
             ],
-            'requirements' => ['entries' => $this->requirementEntries],
+            'requirements' => $this->omitRequirements ? null : ['entries' => $this->requirementEntries],
             'defaults' => [
                 'responsibilities' => [
                     'fees_collector' => 'application',

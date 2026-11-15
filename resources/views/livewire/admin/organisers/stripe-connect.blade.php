@@ -86,9 +86,12 @@
                 @if (empty($requirements['currently_due']) && empty($requirements['eventually_due']))
                     <p class="text-sm text-slate-600">No outstanding requirements. You are all set.</p>
                 @else
+                    @php($rendered = false)
+
                     @foreach (['currently_due' => 'Required now', 'eventually_due' => 'Required later'] as $bucket => $heading)
                         @if (! empty($requirements[$bucket]))
-                            <h3 class="text-sm font-medium text-slate-900 {{ $loop->first ? '' : 'mt-5' }}">{{ $heading }}</h3>
+                            <h3 class="text-sm font-medium text-slate-900 {{ $rendered ? 'mt-5' : '' }}">{{ $heading }}</h3>
+                            @php($rendered = true)
 
                             <ul class="mt-2 list-inside list-disc space-y-2 text-sm text-slate-700">
                                 @foreach ($requirements[$bucket] as $requirement)

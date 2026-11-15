@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\Admin\Organisers\StripeConnect;
 use App\Models\Event;
 use App\Models\Organiser;
 use App\Models\User;
 use App\Services\Stripe\ConnectService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class StripeConnectTest extends TestCase
@@ -115,6 +117,32 @@ class StripeConnectTest extends TestCase
         $this->assertContains('requirements', $retrieve['params']['include']);
     }
 
+    public function test_dashboard_url_uses_the_v1_login_link_endpoint_for_a_v2_account(): void
+    {
+        $organiser = Organiser::factory()->create(['stripe_account_id' => 'acct_existing']);
+        $stripe = $this->fakeStripe();
+
+        $url = app(ConnectService::class)->dashboardUrl($organiser);
+
+        $this->assertSame('https://dashboard.stripe.test/acct_existing', $url);
+        $this->assertSame('/v1/accounts/acct_existing/login_links', $stripe->requests[0]['path']);
+    }
+
+    public function test_missing_requirements_payload_does_not_clear_an_onboarded_organiser(): void
+    {
+        $organiser = Organiser::factory()->stripeReady()->create(['stripe_account_id' => 'acct_existing']);
+        $stripe = $this->fakeStripe();
+        $stripe->omitRequirements = true;
+
+        app(ConnectService::class)->refreshStatus($organiser);
+
+        $organiser->refresh();
+
+        $this->assertTrue($organiser->stripe_details_submitted);
+        $this->assertTrue($organiser->stripeReady());
+        $this->assertNotNull($organiser->stripe_onboarded_at);
+    }
+
     public function test_requirements_map_v2_entries_by_deadline(): void
     {
         $organiser = Organiser::factory()->create(['stripe_account_id' => 'acct_existing']);
@@ -150,6 +178,41 @@ class StripeConnectTest extends TestCase
         $this->assertSame(['invalid_street_address'], $requirements['currently_due'][1]['errors']);
         $this->assertSame(['owners.0.date_of_birth'], array_column($requirements['eventually_due'], 'description'));
         $this->assertSame('requirements.past_due', $requirements['disabled_reason']);
+    }
+
+    public function test_the_admin_panel_lists_v2_requirements(): void
+    {
+        $user = User::factory()->create();
+        $organiser = Organiser::factory()->create([
+            'user_id' => $user->id,
+            'stripe_account_id' => 'acct_existing',
+        ]);
+
+        $stripe = $this->fakeStripe();
+        $stripe->cardPaymentsStatus = 'pending';
+        $stripe->requirementEntries = [
+            [
+                'awaiting_action_from' => 'user',
+                'description' => 'representative.address.postal_code',
+                'minimum_deadline' => ['status' => 'currently_due'],
+                'errors' => [['code' => 'invalid_street_address', 'description' => 'Invalid address.']],
+            ],
+            [
+                'awaiting_action_from' => 'stripe',
+                'description' => 'owners.0.date_of_birth',
+                'minimum_deadline' => ['status' => 'eventually_due'],
+            ],
+        ];
+
+        $this->actingAs($user);
+
+        Livewire::test(StripeConnect::class, ['organiser' => $organiser])
+            ->assertSee('Required now')
+            ->assertSee('Representative Address Postal Code')
+            ->assertSee('invalid_street_address')
+            ->assertSee('Required later')
+            ->assertSee('Owners Date Of Birth')
+            ->assertSee('Stripe is reviewing this');
     }
 
     public function test_events_cannot_be_published_until_stripe_is_ready(): void
