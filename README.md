@@ -72,7 +72,9 @@ Connected accounts are created with the **Accounts v2** API (`/v2/core/accounts`
 2. Forward webhooks locally:
 
    ```bash
-   stripe listen --forward-to localhost:8000/stripe/webhook
+   stripe listen \
+  --events payment_intent.succeeded,payment_intent.payment_failed,payment_intent.canceled,charge.refunded,account.updated \
+  --forward-to localhost:8000/stripe/webhook
    ```
 
 3. In the dashboard, open an organiser → **Stripe** and complete Express onboarding. Until the connected account's `card_payments` capability is `active`, events can still be published and sold, but payments are taken on the platform account from `.env` and the organiser is settled outside Stripe.

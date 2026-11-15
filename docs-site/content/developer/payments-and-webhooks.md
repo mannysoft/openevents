@@ -135,7 +135,13 @@ refund API call succeeds but the redirect or action fails, the webhook still rec
 ## Local testing
 
 ```bash
-stripe listen --forward-to localhost:8000/stripe/webhook
+stripe listen \
+  --events payment_intent.succeeded,payment_intent.payment_failed,payment_intent.canceled,charge.refunded,account.updated \
+  --forward-to localhost:8000/stripe/webhook
+
+The CLI prints its signing secret (`whsec_...`) on startup; copy it into
+`STRIPE_WEBHOOK_SECRET`. Current CLI versions require `--events` (or `--all-snapshot`), and the
+app ignores events it does not handle, so listing the five above is enough.
 ```
 
 Copy the printed `whsec_...` into `STRIPE_WEBHOOK_SECRET` and restart the app. With an empty

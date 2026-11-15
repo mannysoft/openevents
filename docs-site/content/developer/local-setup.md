@@ -90,10 +90,14 @@ npm run build  # production assets into public/build
 
 Feature tests fake Stripe at the HTTP layer, so no keys or network access are
 needed. For manual payment testing, set `STRIPE_KEY`, `STRIPE_SECRET` and
-`STRIPE_WEBHOOK_SECRET`, then forward events:
+`STRIPE_WEBHOOK_SECRET`, install the Stripe CLI (`brew install stripe/stripe-cli/stripe`),
+authenticate once with `stripe login` (or export `STRIPE_API_KEY=sk_test_...`), then forward
+events:
 
 ```bash
-stripe listen --forward-to localhost:8000/stripe/webhook
+stripe listen \
+  --events payment_intent.succeeded,payment_intent.payment_failed,payment_intent.canceled,charge.refunded,account.updated \
+  --forward-to localhost:8000/stripe/webhook
 ```
 
 If `STRIPE_WEBHOOK_SECRET` is blank, `StripeWebhookController::parseEvent` parses the payload

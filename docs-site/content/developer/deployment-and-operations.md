@@ -94,7 +94,9 @@ let anyone complete orders by posting JSON, so treat a blank secret as a misconf
 ### Local forwarding
 
 ```bash
-stripe listen --forward-to localhost:8000/stripe/webhook
+stripe listen \
+  --events payment_intent.succeeded,payment_intent.payment_failed,payment_intent.canceled,charge.refunded,account.updated \
+  --forward-to localhost:8000/stripe/webhook
 ```
 
 Copy the printed secret into `.env`. Replay individual events from the Stripe dashboard or
