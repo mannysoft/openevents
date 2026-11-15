@@ -1,0 +1,78 @@
+{
+    "type": "ContactUpdate",
+    "locationId": "ZDavdc0F1sm0KU0x8ggQ",
+    "appId": "65d8669f0486ad0f61e6c087",
+    "id": "QVcJNxbxl7TTj8AEHzQw",
+    "firstName": "Manny",
+    "lastName": "Isles",
+    "email": "mannysoft@gmail.com",
+    "dnd": false,
+    "dndSettings": {
+        "Call": {
+            "status": "inactive"
+        },
+        "Email": {
+            "code": "103",
+            "message": "Updated by 'Manny Isles' at 2024-10-05T12:46:04.499Z",
+            "status": "inactive"
+        },
+        "FB": {
+            "status": "inactive"
+        },
+        "SMS": {
+            "status": "inactive"
+        },
+        "WhatsApp": {
+            "status": "inactive"
+        }
+    },
+    "source": "payment_link",
+    "address1": "122",
+    "city": "Lumban",
+    "state": "Laguna",
+    "postalCode": "4014",
+    "tags": [
+        "lounge-user-asofmarch16",
+        "lobby-user-march15",
+        "lobby-user-asofmarch20",
+        "membership cancelled",
+        "eventvisits",
+        "london-20240829",
+        "london-20240829-visits-nonmember",
+        "london-20240829-purchased-nonmember",
+        "london-20240829-guest-nonmember",
+        "gwc-members",
+        "accra",
+        "london",
+        "lobby-user",
+        "client",
+        "influencer-club",
+        "losangeles-20240919",
+        "losangeles-20240919-visits-nonmember",
+        "losangeles-20240919-purchased-nonmember"
+    ],
+    "country": "PH",
+    "dateAdded": "2024-03-12T19:31:11.627Z",
+    "customFields": [
+        {
+            "id": "zsjpzMFlU3ka3MfOPrvk",
+            "value": "2k0ij4ar24vl3l9n"
+        },
+        {
+            "id": "ZRIJ46ntW6EGYCsOSoUE",
+            "value": "london"
+        },
+        {
+            "id": "dfTj6svRDFNK3TZghRp6",
+            "value": "The_Influencers_Club"
+        },
+        {
+            "id": "l7425hMpEI9O4fT3RS4R",
+            "value": "Influencers Club"
+        },
+        {
+            "id": "5naZSxylab3i4fXyNbvb",
+            "value": "10 - 199"
+        }
+    ]
+}

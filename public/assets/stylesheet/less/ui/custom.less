@@ -1,0 +1,997 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&display=swap'); /* css for intro section */
+#event_page_wrap #intro {
+  padding: 0 !important;
+  background-color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+  margin-top: 25px;
+
+  .intro-header {
+    border-bottom: 1px solid #e0e0e0;
+    text-align: right;
+
+    .intro-group {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: inline-block;
+      vertical-align: middle;
+
+      .intro-group-item {
+        float: left;
+
+        .btn-event-link {
+          padding: 20px;
+          display: block;
+          color: #000;
+          text-transform: uppercase;
+          font-weight: 500;
+          letter-spacing: 1px;
+          opacity: 0.6;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+
+  .hero-section {
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 1;
+    padding: 60px;
+
+    &:after {
+      position: absolute;
+      content: '';
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: -1;
+    }
+  }
+
+  .e-title {
+    color: #fff;
+    font-size: 36px;
+    font-weight: 700;
+    text-transform: capitalize;
+    padding: 0;
+    margin: 0 0 30px;
+    letter-spacing: 1px;
+  }
+
+  .event_venue {
+    .date-grid {
+      display: inline-flex;
+      align-items: center;
+
+      .column {
+        border: 2px solid #fff;
+        border-radius: 3px;
+        padding: 4px 12px;
+        text-align: center;
+        margin: 0 20px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        .date {
+          font-size: 25px;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 0;
+          font-weight: 300;
+
+          &.month {
+            font-size: 20px;
+          }
+
+          &.year {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    .e-when {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 5px;
+      line-height: 1.7;
+    }
+
+    .e-where {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.7;
+      margin: 30px 0 0;
+
+      b {
+        font-weight: 300;
+      }
+    }
+  }
+}
+/* css for tickets section */
+#event_page_wrap #tickets {
+  background: #FFF9EE url("https://media.globalwomanclub.com/events/lightpaperfibers.png") !important;
+  padding: 50px 30px !important;
+  margin: 0 auto !important;
+  font-family: 'Arvo', serif;
+
+  .inner-tickets {
+    border: 2px dashed rgba(51, 51, 51, 0.5);
+    padding: 30px;
+
+    .section_head {
+      font-family: inherit;
+      letter-spacing: 1px;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.3;
+      text-transform: uppercase;
+      margin: 0 0 30px;
+    }
+
+    .tickets_table_wrap {
+      table {
+        margin: 0;
+
+        td {
+          .semibold {
+            font-size: 16px;
+            text-transform: capitalize;
+          }
+
+          .text-muted {
+            color: #5c5c5c !important;
+          }
+
+          .ticket-pricing {
+            font-weight: 500;
+          }
+
+          .btn {
+            padding: 11px 40px;
+            font-size: 18px;
+            font-weight: 500;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+        }
+      }
+    }
+  }
+}
+// css for details section
+
+#event_page_wrap #details {
+  padding: 50px 30px !important;
+  margin: 0 auto !important;
+  font-family: 'Roboto', sans-serif;
+
+  .section_head {
+    font-family: inherit;
+    letter-spacing: 1px;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-transform: uppercase;
+    margin: 0 0 30px;
+  }
+
+  .content {
+    &.event_details {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 300;
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+
+  .countdown_wrap {
+    margin: 40px 0 0;
+
+    .countdown_title {
+      font-size: 20px;
+      margin: 0 0 20px;
+      font-weight: 400;
+    }
+
+    #countdown {
+      padding: 0;
+      margin: 0;
+      text-align: center;
+      list-style: none;
+
+      li {
+        display: inline-block;
+        width: 104px;
+        text-align: center;
+        background: #f1f1f1;
+        padding: 15px 5px;
+        margin-right: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+
+        span {
+          font-size: 40px;
+          font-weight: 700;
+          color: #3b3b3b;
+          height: 108px;
+          line-height: 1;
+          position: relative;
+        }
+
+        p {
+          margin-top: 5px;
+          color: #8a8a8a;
+          text-transform: uppercase;
+          font-size: 0.975em;
+          margin: 5px 0 0;
+          font-weight: 300;
+        }
+      }
+    }
+
+    .calendarMenu {
+      text-align: center;
+
+      .dropdown {
+        display: inline-block;
+
+        .btn {
+          padding: 7px 25px;
+          color: #8c8c8c !important;
+          border: solid 2px #cacaca;
+          font-size: 14px;
+          font-weight: 500;
+          outline: none;
+          line-height: 20px;
+          vertical-align: middle;
+          background: 0 0;
+          border-radius: 3px;
+          text-transform: uppercase;
+          transition: all 0.25s ease-out;
+
+          &:hover {
+            border-color: #818181;
+          }
+        }
+
+        .dropdown-menu {
+          background: #fff;
+          border: 1px solid #e7e7e7;
+          border-radius: 2px;
+          color: #000;
+          width: 100%;
+
+          a {
+            color: #000;
+            font-size: 14px;
+            text-decoration: none;
+            outline: none;
+            padding: 10px 20px;
+            line-height: 1.3em;
+            display: block;
+            border-bottom: 1px solid #e7e7e7;
+
+            &:last-child {
+              border: 0;
+            }
+
+            &:hover {
+              background: #efefef;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+// css for share section
+
+#event_page_wrap #share {
+  padding: 50px 30px !important;
+  margin: 0 auto !important;
+  font-family: 'Roboto', sans-serif;
+
+  .section_head {
+    font-family: inherit;
+    letter-spacing: 1px;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-transform: uppercase;
+    margin: 0 0 30px;
+  }
+
+  .rrssb-buttons {
+    display: inline-block;
+    width: auto;
+    height: auto;
+
+    li {
+      height: auto;
+      width: auto !important;
+      padding: 0 7px;
+
+      a {
+        width: 53px;
+        height: 53px;
+        border-radius: 50%;
+        text-align: center;
+        margin: auto;
+        background-color: rgba(0,0,0,.1);
+        color: rgba(0,0,0,.2);
+        padding: 0;
+
+        .rrssb-icon {
+          left: 50%;
+          padding-top: 5px;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: auto;
+
+          svg {
+            height: 25px;
+            width: 25px;
+
+            path,
+            polygon {
+              fill: rgba(0,0,0,.2);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+// css for lobby section
+
+#event_page_wrap #lobby {
+  padding: 50px 30px 0 !important;
+  margin: 0 auto !important;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f1f1f1;
+  text-align: center;
+
+  h4 {
+    color: #818181;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1.3;
+    margin: 10px 0;
+  }
+
+  img {
+    max-width: 150px;
+    margin: auto;
+  }
+
+  .footer_bottom-bg {
+    background: url("http://media.globalwomanclub.com/events/footer_bg_light.png") no-repeat bottom center;
+    min-height: 155px;
+    padding: 20px 0 100px;
+
+    .btn {
+      border-radius: 3px;
+      padding: 23px 50px;
+      font-size: 24px;
+      font-weight: 500;
+      text-transform: capitalize;
+      background-color: #e15452;
+      border-width: 2px;
+      transition: all 0.25s ease-out;
+
+      &:hover {
+        background-color: #fff;
+        border-color: #e15452;
+        color: #e15452 !important;
+      }
+    }
+  }
+}
+// css for timezone section
+
+#event_page_wrap #timezone {
+  margin: 0 auto !important;
+  font-family: 'Roboto', sans-serif;
+  padding: 50px 30px !important;
+
+  .section_head {
+    font-family: inherit;
+    letter-spacing: 1px;
+    margin: 0 0 50px;
+
+    h1 {
+      letter-spacing: 1px;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.3;
+      text-transform: uppercase;
+      margin: 0 0 10px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    p {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 300;
+    }
+  }
+
+  .timezone-box {
+    text-align: center;
+    margin-bottom: 40px;
+
+    img {
+      width: 100%;
+      padding: 0 5px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      text-align: center;
+      line-height: 1.3em;
+      font-size: 13px;
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+
+      &.time {
+        line-height: 1.3em;
+        font-size: 16px;
+
+        &:last-child {
+          margin: 0;
+        }
+      }
+
+      &.space {
+        line-height: 1;
+      }
+    }
+
+    h2 {
+      font-size: 14px;
+      line-height: normal;
+      margin: 10px 0;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+    }
+  }
+
+  .timezone-countdown-title {
+    font-size: 20px;
+    margin: 0 0 20px;
+    font-weight: 400;
+  }
+
+  .timezone-countdown-time {
+    margin: 0 0 20px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  #timezone-countdown {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    list-style: none;
+
+    li {
+      display: inline-block;
+      width: 104px;
+      text-align: center;
+      background: #f1f1f1;
+      padding: 15px 5px;
+      margin-right: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+
+      span {
+        font-size: 40px;
+        font-weight: 700;
+        color: #3b3b3b;
+        height: 108px;
+        line-height: 1;
+        position: relative;
+      }
+
+      p {
+        margin-top: 5px;
+        color: #8a8a8a;
+        text-transform: uppercase;
+        font-size: 0.975em;
+        margin: 5px 0 0;
+        font-weight: 300;
+      }
+    }
+  }
+
+  .calendarMenu {
+    text-align: center;
+
+    .dropdown {
+      display: inline-block;
+
+      .btn {
+        padding: 7px 25px;
+        color: #8c8c8c !important;
+        border: solid 2px #cacaca;
+        font-size: 14px;
+        font-weight: 500;
+        outline: none;
+        line-height: 20px;
+        vertical-align: middle;
+        background: 0 0;
+        border-radius: 3px;
+        text-transform: uppercase;
+        transition: all 0.25s ease-out;
+
+        &:hover {
+          border-color: #818181;
+        }
+      }
+
+      .dropdown-menu {
+        background: #fff;
+        border: 1px solid #e7e7e7;
+        border-radius: 2px;
+        color: #000;
+        width: 100%;
+
+        a {
+          color: #000;
+          font-size: 14px;
+          text-decoration: none;
+          outline: none;
+          padding: 10px 20px;
+          line-height: 1.3em;
+          display: block;
+          border-bottom: 1px solid #e7e7e7;
+
+          &:last-child {
+            border: 0;
+          }
+
+          &:hover {
+            background: #efefef;
+          }
+        }
+      }
+    }
+  }
+}
+// css for location section
+
+#event_page_wrap #location {
+  margin: 0 auto !important;
+  font-family: 'Roboto', sans-serif;
+
+  .google-maps {
+    iframe {
+      min-height: 400px !important;
+    }
+  }
+}
+// css for organiser section
+
+#event_page_wrap #organiser {
+  padding: 50px 30px !important;
+  font-family: 'Roboto', sans-serif;
+
+  .event_organiser_details {
+    .logo {
+      margin: 0 0 15px;
+
+      img {
+        max-width: 75px;
+      }
+    }
+
+    .organiser-name {
+      display: inline-block;
+      margin: 0 0 5px;
+    }
+
+    p {
+      margin: 0 0 15px;
+    }
+
+    .btn {
+      font-weight: 500;
+      border-radius: 2px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-right: 5px;
+    }
+
+    .contact_form {
+      padding: 20px 200px;
+      margin-bottom: 0;
+      background-color: transparent;
+      border: 0;
+      box-shadow: none;
+
+      h3 {
+        text-align: center;
+        font-size: 25px;
+        font-weight: 300;
+        font-family: 'Roboto', sans-serif;
+        text-transform: uppercase;
+        margin: 0 0 30px;
+      }
+
+      .form-group {
+        label {
+          font-weight: 500;
+        }
+
+        .form-control {
+          padding: 6px 12px;
+          font-size: 14px;
+          line-height: 1.42857143;
+          border: 1px solid #ccc;
+          height: 40px;
+          border-radius: 3px;
+        }
+
+        textarea {
+          &.form-control {
+            height: auto;
+          }
+        }
+
+        .btn {
+          width: 100%;
+          padding: 10px 16px;
+          font-size: 18px;
+          line-height: 1.3333333;
+          margin: 0;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+// css for organiser_page_wrap
+
+#organiser_page_wrap {
+  #intro {
+    padding: 60px 40px !important;
+    font-family: 'Roboto', sans-serif;
+
+    .organiser_view {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .organiser_logo {
+        width: 300px;
+
+        img {
+          width: 100%;
+          border-radius: 100%;
+        }
+      }
+
+      .organiser_info {
+        padding-left: 30px;
+        text-align: left;
+
+        h1 {
+          margin: 0 0 10px;
+        }
+
+        .description {
+          font-weight: 400;
+        }
+      }
+    }
+  }
+
+  #events {
+    padding: 60px 40px 20px !important;
+    background-color: #fafbfd !important;
+    font-family: 'Roboto', sans-serif;
+
+    .event-listing-heading {
+      margin-bottom: 20px;
+    }
+
+    .event-list {
+      background-color: #fff;
+      box-shadow: 0 2px 8px 0 rgba(103,151,255,.09), 0 4px 32px 0 rgba(103,151,255,.09);
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 40px;
+
+      .event-list-item {
+        background-color: transparent;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 15px;
+        margin: 0 0 15px;
+        height: auto;
+
+        &:last-child {
+          border: 0;
+          padding: 0;
+        }
+
+        time {
+          background-color: #f25e4e;
+          border-radius: 3px;
+          padding: 10px;
+          width: auto;
+          height: fit-content;
+
+          .day {
+            font-size: 20pt;
+            font-weight: 500;
+            padding-bottom: 3px;
+          }
+
+          .month {
+            font-weight: 300;
+            font-size: 10pt;
+          }
+        }
+
+        .info {
+          background-color: transparent;
+          height: auto;
+          padding: 0 0 0 15px;
+
+          .title {
+            font-weight: 400;
+            padding: 0;
+            margin: 0 0 4px;
+            font-size: 14pt;
+
+            a {
+              color: inherit;
+            }
+          }
+
+          .desc {
+            padding: 0;
+            margin: 0 0 4px;
+          }
+
+          ul {
+            margin: 0;
+            background-color: transparent;
+            display: flex;
+            padding: 0;
+            position: inherit;
+
+            li {
+              margin-right: 10px;
+              padding: 0;
+              background-color: transparent;
+
+              &:last-child {
+                margin: 0;
+              }
+
+              a {
+                background-color: #1da1f2;
+                color: #fff;
+                padding: 0 10px;
+                border-radius: 3px;
+                min-width: 100px;
+                line-height: 30px;
+                font-size: 13px;
+                font-weight: 400;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .panel {
+      margin: 40px 0 20px;
+      border-radius: 8px;
+      border: 0;
+      box-shadow: 0 2px 8px 0 rgba(103, 151, 255, 0.09), 0 4px 32px 0 rgba(103, 151, 255, 0.09);
+    }
+
+    .alert {
+      margin: 0;
+    }
+  }
+}
+// css for responsive
+@media screen and (min-width: 1200px) {
+  .container {
+    width: 1170px !important;
+  }
+}
+@media screen and (max-width: 767px) {
+  #event_page_wrap {
+    #intro {
+      .intro-header {
+        text-align: center;
+
+        .intro-group {
+          .intro-group-item {
+            .btn-event-link {
+              padding: 15px;
+            }
+          }
+        }
+      }
+
+      .e-title {
+        font-size: 40px;
+        margin: 0 0 15px;
+      }
+
+      .event_venue {
+        .e-when {
+          font-size: 17px;
+        }
+
+        .date-grid {
+          .column {
+            margin: 0 15px;
+          }
+        }
+      }
+
+      .hero-section {
+        padding: 60px 0;
+      }
+    }
+
+    #tickets {
+      padding: 50px 15px !important;
+
+      .inner-tickets {
+        padding: 15px;
+      }
+    }
+
+    #details {
+      padding: 50px 15px 30px 15px !important;
+
+      .section_head {
+        margin: 0 0 15px;
+      }
+
+      .content {
+        padding: 0;
+      }
+
+      .countdown_wrap {
+        margin: 50px 0 0;
+
+        .countdown_title {
+          margin: 0 0 30px;
+        }
+
+        #countdown {
+          li {
+            margin: 0 10px 20px;
+          }
+        }
+      }
+    }
+
+    #timezone {
+      #timezone-countdown {
+        li {
+          margin: 0 10px 20px;
+        }
+      }
+    }
+
+    #location {
+      .google-maps {
+        padding: 0;
+      }
+    }
+
+    #share {
+      padding: 50px 15px 35px !important;
+
+      .rrssb-buttons {
+        li {
+          margin-bottom: 15px;
+          float: none;
+          display: inline-block;
+        }
+      }
+    }
+
+    #lobby {
+      padding: 50px 15px 0 !important;
+    }
+
+    #organiser {
+      padding: 50px 15px !important;
+
+      .event_organiser_details {
+        .btn {
+          margin: 0 5px 10px;
+        }
+
+        .contact_form {
+          padding: 0;
+
+          h3 {
+            font-size: 30px;
+          }
+        }
+      }
+    }
+  }
+
+  #organiser_page_wrap {
+    #intro {
+      padding: 40px 20px !important;
+
+      .organiser_view {
+        display: inherit;
+
+        .organiser_info {
+          text-align: center;
+          padding: 0;
+        }
+      }
+    }
+
+    #events {
+      padding: 20px !important;
+
+      .col-md-12,
+      .col-xs-12 {
+        padding: 0;
+      }
+
+      .event-list {
+        padding: 15px;
+
+        .event-list-item {
+          display: flex;
+
+          .info {
+            text-align: left;
+
+            .title {
+              &.ellipsis {
+                overflow: inherit;
+                text-overflow: inherit;
+                white-space: inherit;
+              }
+            }
+          }
+        }
+      }
+
+      .panel {
+        margin: 0;
+      }
+    }
+  }
+}

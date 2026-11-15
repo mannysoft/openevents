@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+/* css for top-menu */
+.top-header {
+  top: 0;
+  left: 0;
+  height: 45px;
+  position: fixed;
+  width: 100%;
+  background-color: #fff;
+  border-bottom: 1px solid #DEDFE0;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  z-index: 9999;
+}
+
+.top-header ul {
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
+  list-style: none;
+}
+
+.top-header ul li {
+  float: left;
+}
+
+.top-header ul li:first-child a {
+  padding: 10px 15px;
+}
+
+.top-header ul li:first-child a span {
+  padding-left: 6px;
+}
+
+.top-header ul li.active a {
+  color: #da2926;
+  opacity: 1;
+}
+
+.top-header ul li.active a svg {
+  fill: #da2926;
+}
+
+.top-header ul li a {
+  padding: 12px 15px;
+  display: block;
+  text-decoration: none;
+  font-weight: 600;
+  color: #000;
+  text-transform: uppercase;
+  opacity: .6;
+  font-size: 13px;
+}
+
+.top-header ul li a svg {
+  margin-top: -3px;
+  vertical-align: middle;
+}
+
+.top-header ul li a span {
+  vertical-align: middle;
+  padding-left: 3px;
+}
+
+/* css for responsive */
+@media screen and (max-width: 768px) {
+  #gw-header,
+  #gw-header .top-header {
+    display: none;
+  }
+}
