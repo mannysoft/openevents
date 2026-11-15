@@ -1,0 +1,89 @@
+/* Slate palette taken from the application's Tailwind UI. */
+
+:root {
+  --ifm-color-primary: #1e293b;
+  --ifm-color-primary-dark: #1a2433;
+  --ifm-color-primary-darker: #182130;
+  --ifm-color-primary-darkest: #141b27;
+  --ifm-color-primary-light: #223043;
+  --ifm-color-primary-lighter: #243347;
+  --ifm-color-primary-lightest: #2a3b52;
+
+  --ifm-font-family-base: ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ifm-font-family-monospace: ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
+    Consolas, 'Liberation Mono', monospace;
+  --ifm-heading-font-weight: 600;
+  --ifm-code-font-size: 94%;
+  --ifm-navbar-shadow: 0 1px 2px 0 rgb(15 23 42 / 6%);
+  --docusaurus-highlighted-code-line-bg: rgb(15 23 42 / 8%);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #cbd5e1;
+  --ifm-color-primary-dark: #b6c2d2;
+  --ifm-color-primary-darker: #aab8ca;
+  --ifm-color-primary-darkest: #8c9db4;
+  --ifm-color-primary-light: #e0e7ef;
+  --ifm-color-primary-lighter: #e9eef4;
+  --ifm-color-primary-lightest: #f4f7fa;
+
+  --ifm-background-color: #0f172a;
+  --ifm-navbar-background-color: #0b1220;
+  --ifm-footer-background-color: #0b1220;
+  --docusaurus-highlighted-code-line-bg: rgb(226 232 240 / 12%);
+}
+
+/* Light primary in dark mode needs dark text on filled buttons. */
+[data-theme='dark'] .button--primary {
+  --ifm-button-color: #0f172a;
+}
+
+[data-theme='dark'] .pagination-nav__link {
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+html[data-theme='dark'] .navbar__link--active {
+  color: #f8fafc;
+}
+
+.navbar__title {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.markdown table {
+  display: table;
+  width: 100%;
+  font-size: 0.925rem;
+}
+
+.markdown table th,
+.markdown table td {
+  vertical-align: top;
+}
+
+.markdown h2 {
+  margin-top: 2.25rem;
+}
+
+.admonition {
+  border-radius: 8px;
+}
+
+/* Local search highlighting. */
+mark {
+  background-color: #fde68a;
+  color: inherit;
+  padding: 0 0.15em;
+  border-radius: 3px;
+}
+
+[data-theme='dark'] mark {
+  background-color: #a16207;
+  color: #fefce8;
+}
+
+.mermaid {
+  text-align: center;
+}

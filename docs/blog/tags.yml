@@ -1,0 +1,8 @@
+documentation:
+  label: Documentation
+  permalink: /documentation
+  description: Changes to the Events documentation site.
+releases:
+  label: Releases
+  permalink: /releases
+  description: Notable changes to the Events platform.
