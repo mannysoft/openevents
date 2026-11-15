@@ -111,7 +111,6 @@ class Scanner extends Component
             : "{$attendee->name()} checked in.";
 
         $this->dispatch('checkin', name: $attendee->name());
-        session()->flash('status', "{$attendee->name()} checked in.");
     }
 
     private function normaliseReference(string $reference): string

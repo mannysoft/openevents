@@ -46,7 +46,7 @@ class Index extends Component
         Gate::authorize('update', $this->event);
 
         $this->resetForm();
-        $this->sort_order = (string) (((int) $this->event->questions()->max('sort_order')) + 1);
+        $this->sort_order = (string) (((int) $this->questionQuery()->max('sort_order')) + 1);
         $this->showForm = true;
     }
 
@@ -54,7 +54,7 @@ class Index extends Component
     {
         Gate::authorize('update', $this->event);
 
-        $question = $this->event->questions()->findOrFail($questionId);
+        $question = $this->questionQuery()->findOrFail($questionId);
 
         $this->resetValidation();
 
@@ -103,11 +103,11 @@ class Index extends Component
         ];
 
         if ($this->editingId !== null) {
-            $this->event->questions()->whereKey($this->editingId)->firstOrFail()->update($attributes);
+            $this->questionQuery()->whereKey($this->editingId)->firstOrFail()->update($attributes);
 
             session()->flash('status', 'Question updated.');
         } else {
-            $this->event->questions()->create($attributes);
+            Question::create(['event_id' => $this->event->id] + $attributes);
 
             session()->flash('status', 'Question created.');
         }
@@ -119,7 +119,7 @@ class Index extends Component
     {
         Gate::authorize('update', $this->event);
 
-        $ids = $this->event->questions()->orderBy('sort_order')->orderBy('id')->pluck('id')->all();
+        $ids = $this->questionQuery()->orderBy('sort_order')->orderBy('id')->pluck('id')->all();
         $position = array_search($questionId, $ids, true);
 
         if ($position === false) {
@@ -135,7 +135,7 @@ class Index extends Component
         [$ids[$position], $ids[$target]] = [$ids[$target], $ids[$position]];
 
         foreach ($ids as $index => $id) {
-            $this->event->questions()->whereKey($id)->update(['sort_order' => $index + 1]);
+            $this->questionQuery()->whereKey($id)->update(['sort_order' => $index + 1]);
         }
     }
 
@@ -143,13 +143,24 @@ class Index extends Component
     {
         Gate::authorize('update', $this->event);
 
-        $this->event->questions()->whereKey($questionId)->delete();
+        $this->questionQuery()->whereKey($questionId)->delete();
 
         if ($this->editingId === $questionId) {
             $this->resetForm();
         }
 
         session()->flash('status', 'Question deleted.');
+    }
+
+    /**
+     * The questions relation is ordered by sort_order, which cannot be carried
+     * into UPDATE/DELETE statements on every database driver.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder<Question>
+     */
+    protected function questionQuery()
+    {
+        return Question::query()->where('event_id', $this->event->id);
     }
 
     /**
@@ -189,8 +200,8 @@ class Index extends Component
         // Question does not define an answers() relation yet, so count answers with a
         // correlated subquery until one exists.
         $questions = method_exists(Question::class, 'answers')
-            ? $this->event->questions()->withCount('answers')->get()
-            : $this->event->questions()->addSelect([
+            ? $this->questionQuery()->withCount('answers')->orderBy('sort_order')->get()
+            : $this->questionQuery()->orderBy('sort_order')->addSelect([
                 'answers_count' => Answer::query()
                     ->selectRaw('count(*)')
                     ->whereColumn('answers.question_id', 'questions.id'),
