@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\EventStatus;
 use App\Enums\OrderStatus;
+use App\Models\Attendee;
 use App\Models\DiscountCode;
 use App\Models\Event;
 use App\Models\Organiser;
@@ -77,7 +79,7 @@ class OrderServiceTest extends TestCase
     public function test_draft_events_cannot_be_booked(): void
     {
         [$event, $ticket] = $this->liveEventWithTicket();
-        $event->update(['status' => \App\Enums\EventStatus::Draft]);
+        $event->update(['status' => EventStatus::Draft]);
 
         $this->expectException(ValidationException::class);
 
@@ -151,7 +153,7 @@ class OrderServiceTest extends TestCase
         $service->cancel($order);
 
         $this->assertSame(OrderStatus::Cancelled, $order->refresh()->status);
-        $this->assertSame(0, \App\Models\Attendee::withTrashed()->count());
+        $this->assertSame(0, Attendee::withTrashed()->count());
     }
 
     public function test_check_in_requires_a_completed_order(): void

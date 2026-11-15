@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Organiser;
 use App\Services\Stripe\CheckoutService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class CheckoutServiceTest extends TestCase
@@ -78,7 +79,7 @@ class CheckoutServiceTest extends TestCase
 
         $this->fakeStripe();
 
-        $this->expectException(\Illuminate\Validation\ValidationException::class);
+        $this->expectException(ValidationException::class);
 
         app(CheckoutService::class)->createPaymentIntent($order);
     }

@@ -8,9 +8,7 @@ use Stripe\StripeClient;
 
 class ConnectService
 {
-    public function __construct(private readonly StripeClient $stripe)
-    {
-    }
+    public function __construct(private readonly StripeClient $stripe) {}
 
     public function createAccount(Organiser $organiser): string
     {

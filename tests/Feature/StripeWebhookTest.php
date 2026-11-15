@@ -6,8 +6,10 @@ use App\Enums\OrderStatus;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\Organiser;
+use App\Mail\OrderConfirmation;
 use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class StripeWebhookTest extends TestCase
@@ -142,5 +144,24 @@ class StripeWebhookTest extends TestCase
 
         $this->postJson('/stripe/webhook', $this->payload('customer.created', ['id' => 'cus_1']))
             ->assertOk();
+    }
+
+    public function test_completed_payments_queue_the_confirmation_email_once(): void
+    {
+        config(['services.stripe.webhook_secret' => null]);
+        Mail::fake();
+
+        $order = $this->orderWithTicket();
+
+        $payload = $this->payload('payment_intent.succeeded', [
+            'id' => 'pi_webhook_mail',
+            'object' => 'payment_intent',
+            'metadata' => ['order' => $order->reference],
+        ]);
+
+        $this->postJson('/stripe/webhook', $payload)->assertOk();
+        $this->postJson('/stripe/webhook', $payload)->assertOk();
+
+        Mail::assertQueued(OrderConfirmation::class, 1);
     }
 }

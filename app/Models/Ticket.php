@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -84,6 +85,6 @@ class Ticket extends Model
 
     public function priceLabel(): string
     {
-        return \App\Support\Money::format($this->price, $this->event->currency_code);
+        return Money::format($this->price, $this->event->currency_code);
     }
 }

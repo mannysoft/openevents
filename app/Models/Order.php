@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Support\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -106,7 +107,7 @@ class Order extends Model
 
     public function totalLabel(): string
     {
-        return \App\Support\Money::format($this->total, $this->currency_code);
+        return Money::format($this->total, $this->currency_code);
     }
 
     public function netToOrganiserMinor(): int

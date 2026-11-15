@@ -6,12 +6,12 @@ use App\Models\Event;
 use App\Models\Ticket;
 use App\Services\OrderService;
 use App\Services\Stripe\CheckoutService;
-use App\Support\Money;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use Stripe\Exception\ApiErrorException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Stripe\Exception\ApiErrorException;
 
 #[Layout('components.layouts.public')]
 class Checkout extends Component
@@ -174,7 +174,7 @@ class Checkout extends Component
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, Ticket>
+     * @return Collection<int, Ticket>
      */
     private function tickets()
     {

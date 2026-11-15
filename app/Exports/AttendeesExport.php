@@ -14,8 +14,7 @@ class AttendeesExport implements FromArray, WithHeadings
     public function __construct(
         private readonly array $headings,
         private readonly array $rows,
-    ) {
-    }
+    ) {}
 
     public function array(): array
     {

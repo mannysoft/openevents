@@ -13,9 +13,7 @@ class TicketIssued extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Attendee $attendee)
-    {
-    }
+    public function __construct(public Attendee $attendee) {}
 
     public function envelope(): Envelope
     {

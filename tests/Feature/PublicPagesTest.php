@@ -6,6 +6,7 @@ use App\Enums\EventStatus;
 use App\Enums\OrderStatus;
 use App\Livewire\Public\Checkout;
 use App\Models\Attendee;
+use App\Models\DiscountCode;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\Organiser;
@@ -13,6 +14,8 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Stripe\ApiRequestor;
+use Stripe\HttpClient\ClientInterface;
 use Tests\TestCase;
 
 class PublicPagesTest extends TestCase
@@ -141,7 +144,7 @@ class PublicPagesTest extends TestCase
     {
         $this->fakeStripe();
 
-        \App\Models\DiscountCode::factory()->create([
+        DiscountCode::factory()->create([
             'event_id' => $this->event->id,
             'code' => 'HALF',
             'value' => 50,
@@ -238,5 +241,33 @@ class PublicPagesTest extends TestCase
         ]);
 
         $this->get(route('tickets.show', $attendee))->assertNotFound();
+    }
+
+    public function test_stripe_failures_cancel_the_reservation_and_show_an_error(): void
+    {
+        $this->fakeStripe()->chargesEnabled = true;
+
+        ApiRequestor::setHttpClient(new class implements ClientInterface
+        {
+            public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1', $maxNetworkRetries = null)
+            {
+                return [json_encode(['error' => ['type' => 'invalid_request_error', 'message' => 'No such account']]), 400, []];
+            }
+        });
+
+        Livewire::test(Checkout::class, ['event' => $this->event])
+            ->call('increment', $this->ticket->id)
+            ->call('continueToDetails')
+            ->set('firstName', 'Ada')
+            ->set('lastName', 'Lovelace')
+            ->set('email', 'ada@example.com')
+            ->set('attendees.0.first_name', 'Ada')
+            ->set('attendees.0.last_name', 'Lovelace')
+            ->set('attendees.0.email', 'ada@example.com')
+            ->call('pay')
+            ->assertHasErrors('payment')
+            ->assertSet('step', 2);
+
+        $this->assertSame(OrderStatus::Cancelled, Order::first()->status);
     }
 }

@@ -62,18 +62,18 @@
 
             <div class="mt-5 grid gap-4 sm:grid-cols-2">
                 <div>
-                    <label class="mb-1 block text-sm font-medium">First name</label>
-                    <input type="text" wire:model="firstName" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                    <label for="buyer-first-name" class="mb-1 block text-sm font-medium">First name</label>
+                    <input id="buyer-first-name" type="text" wire:model="firstName" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
                     @error('firstName') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm font-medium">Last name</label>
-                    <input type="text" wire:model="lastName" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                    <label for="buyer-last-name" class="mb-1 block text-sm font-medium">Last name</label>
+                    <input id="buyer-last-name" type="text" wire:model="lastName" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
                     @error('lastName') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                 </div>
                 <div class="sm:col-span-2">
-                    <label class="mb-1 block text-sm font-medium">Email</label>
-                    <input type="email" wire:model="email" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                    <label for="buyer-email" class="mb-1 block text-sm font-medium">Email</label>
+                    <input id="buyer-email" type="email" wire:model="email" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
                     @error('email') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -88,18 +88,18 @@
 
                         <div class="grid gap-3 sm:grid-cols-2">
                             <div>
-                                <label class="mb-1 block text-xs font-medium text-slate-600">First name</label>
-                                <input type="text" wire:model="attendees.{{ $index }}.first_name" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                                <label for="attendee-{{ $index }}-first-name" class="mb-1 block text-xs font-medium text-slate-600">First name</label>
+                                <input id="attendee-{{ $index }}-first-name" type="text" wire:model="attendees.{{ $index }}.first_name" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
                                 @error("attendees.{$index}.first_name") <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
                             <div>
-                                <label class="mb-1 block text-xs font-medium text-slate-600">Last name</label>
-                                <input type="text" wire:model="attendees.{{ $index }}.last_name" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                                <label for="attendee-{{ $index }}-last-name" class="mb-1 block text-xs font-medium text-slate-600">Last name</label>
+                                <input id="attendee-{{ $index }}-last-name" type="text" wire:model="attendees.{{ $index }}.last_name" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
                                 @error("attendees.{$index}.last_name") <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
                             <div class="sm:col-span-2">
-                                <label class="mb-1 block text-xs font-medium text-slate-600">Email</label>
-                                <input type="email" wire:model="attendees.{{ $index }}.email" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                                <label for="attendee-{{ $index }}-email" class="mb-1 block text-xs font-medium text-slate-600">Email</label>
+                                <input id="attendee-{{ $index }}-email" type="email" wire:model="attendees.{{ $index }}.email" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
                                 @error("attendees.{$index}.email") <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
 
@@ -135,8 +135,8 @@
             </div>
 
             <div class="mt-6">
-                <label class="mb-1 block text-sm font-medium">Discount code</label>
-                <input type="text" wire:model="discountCode" placeholder="Optional" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm sm:w-64">
+                <label for="discount-code" class="mb-1 block text-sm font-medium">Discount code</label>
+                <input id="discount-code" type="text" wire:model="discountCode" placeholder="Optional" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm sm:w-64">
                 @error('discountCode') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
             </div>
 

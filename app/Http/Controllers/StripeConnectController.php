@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 
 class StripeConnectController extends Controller
 {
-    public function __construct(private readonly ConnectService $connect)
-    {
-    }
+    public function __construct(private readonly ConnectService $connect) {}
 
     public function return(Request $request, Organiser $organiser)
     {

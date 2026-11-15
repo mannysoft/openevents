@@ -6,6 +6,7 @@ use App\Enums\QuestionType;
 use App\Models\Answer;
 use App\Models\Event;
 use App\Models\Question;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -156,7 +157,7 @@ class Index extends Component
      * The questions relation is ordered by sort_order, which cannot be carried
      * into UPDATE/DELETE statements on every database driver.
      *
-     * @return \Illuminate\Database\Eloquent\Builder<Question>
+     * @return Builder<Question>
      */
     protected function questionQuery()
     {

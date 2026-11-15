@@ -18,6 +18,7 @@ use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -1600,9 +1601,9 @@ class LegacyImporter
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
-    private function rows($query): \Illuminate\Support\Collection
+    private function rows($query): Collection
     {
         if ($this->limit !== null) {
             $query->limit($this->limit);

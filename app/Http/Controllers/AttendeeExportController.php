@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AttendeesExport;
 use App\Models\Event;
-use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendeeExportController extends Controller
@@ -36,8 +37,8 @@ class AttendeeExportController extends Controller
         $headings = ['Reference', 'Name', 'Email', 'Ticket', 'Order', 'Status', 'Refunded', 'Checked in'];
 
         if ($format === 'xlsx') {
-            return \Maatwebsite\Excel\Facades\Excel::download(
-                new \App\Exports\AttendeesExport($headings, $rows->all()),
+            return Excel::download(
+                new AttendeesExport($headings, $rows->all()),
                 "attendees-{$event->slug}.xlsx",
             );
         }

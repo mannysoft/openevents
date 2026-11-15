@@ -224,7 +224,8 @@ class OrderService
         return $order;
     }
 
-    public function cancelAttendee(Attendee $attendee): void    {
+    public function cancelAttendee(Attendee $attendee): void
+    {
         $attendee->forceFill(['is_cancelled' => true])->save();
     }
 

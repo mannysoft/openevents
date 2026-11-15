@@ -9,9 +9,7 @@ use Stripe\StripeClient;
 
 class RefundService
 {
-    public function __construct(private readonly StripeClient $stripe)
-    {
-    }
+    public function __construct(private readonly StripeClient $stripe) {}
 
     /**
      * Refunds a payment intent and reverses the destination transfer. Stripe

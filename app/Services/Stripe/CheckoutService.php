@@ -9,9 +9,7 @@ use Stripe\StripeClient;
 
 class CheckoutService
 {
-    public function __construct(private readonly StripeClient $stripe)
-    {
-    }
+    public function __construct(private readonly StripeClient $stripe) {}
 
     public function applicationFee(Order $order): int
     {
