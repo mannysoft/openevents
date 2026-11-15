@@ -19,26 +19,26 @@ use App\Livewire\Admin\Tickets\Index as TicketsIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('dashboard')->group(function () {
-    Route::get('/', Dashboard::class)->name('admin.dashboard');
+    Route::livewire('/', Dashboard::class)->name('admin.dashboard');
 
-    Route::get('/organisers', OrganisersIndex::class)->name('admin.organisers.index');
-    Route::get('/organisers/create', OrganiserForm::class)->name('admin.organisers.create');
-    Route::get('/organisers/{organiser}/edit', OrganiserForm::class)->name('admin.organisers.edit');
-    Route::get('/organisers/{organiser}/stripe', StripeConnect::class)->name('admin.organisers.stripe');
+    Route::livewire('/organisers', OrganisersIndex::class)->name('admin.organisers.index');
+    Route::livewire('/organisers/create', OrganiserForm::class)->name('admin.organisers.create');
+    Route::livewire('/organisers/{organiser}/edit', OrganiserForm::class)->name('admin.organisers.edit');
+    Route::livewire('/organisers/{organiser}/stripe', StripeConnect::class)->name('admin.organisers.stripe');
 
-    Route::get('/organisers/{organiser}/events', EventsIndex::class)->name('admin.events.index');
-    Route::get('/organisers/{organiser}/events/create', EventForm::class)->name('admin.events.create');
-    Route::get('/organisers/{organiser}/events/{event}/edit', EventForm::class)->name('admin.events.edit');
+    Route::livewire('/organisers/{organiser}/events', EventsIndex::class)->name('admin.events.index');
+    Route::livewire('/organisers/{organiser}/events/create', EventForm::class)->name('admin.events.create');
+    Route::livewire('/organisers/{organiser}/events/{event}/edit', EventForm::class)->name('admin.events.edit');
 
-    Route::get('/events/{event}/tickets', TicketsIndex::class)->name('admin.tickets.index');
-    Route::get('/events/{event}/orders', OrdersIndex::class)->name('admin.orders.index');
-    Route::get('/events/{event}/attendees', AttendeesIndex::class)->name('admin.attendees.index');
-    Route::get('/events/{event}/attendees/export/{format}', AttendeeExportController::class)->name('admin.attendees.export');
-    Route::get('/events/{event}/check-in', Scanner::class)->name('admin.checkin.index');
-    Route::get('/events/{event}/discounts', DiscountCodesIndex::class)->name('admin.discounts.index');
-    Route::get('/events/{event}/questions', QuestionsIndex::class)->name('admin.questions.index');
-    Route::get('/events/{event}/messages', MessagingIndex::class)->name('admin.messages.index');
+    Route::livewire('/events/{event}/tickets', TicketsIndex::class)->name('admin.tickets.index');
+    Route::livewire('/events/{event}/orders', OrdersIndex::class)->name('admin.orders.index');
+    Route::livewire('/events/{event}/attendees', AttendeesIndex::class)->name('admin.attendees.index');
+    Route::livewire('/events/{event}/attendees/export/{format}', AttendeeExportController::class)->name('admin.attendees.export');
+    Route::livewire('/events/{event}/check-in', Scanner::class)->name('admin.checkin.index');
+    Route::livewire('/events/{event}/discounts', DiscountCodesIndex::class)->name('admin.discounts.index');
+    Route::livewire('/events/{event}/questions', QuestionsIndex::class)->name('admin.questions.index');
+    Route::livewire('/events/{event}/messages', MessagingIndex::class)->name('admin.messages.index');
 
-    Route::get('/orders/{order}', OrderShow::class)->name('admin.orders.show');
-    Route::get('/payouts', PayoutsIndex::class)->name('admin.payouts.index');
+    Route::livewire('/orders/{order}', OrderShow::class)->name('admin.orders.show');
+    Route::livewire('/payouts', PayoutsIndex::class)->name('admin.payouts.index');
 });

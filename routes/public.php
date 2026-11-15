@@ -11,12 +11,12 @@ use App\Livewire\Public\OrganiserPage;
 use App\Livewire\Public\Ticket;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/events', EventIndex::class)->name('events.index');
-Route::get('/o/{organiser}', OrganiserPage::class)->name('organisers.show');
-Route::get('/e/{event}', EventPage::class)->name('events.show');
-Route::get('/e/{event}/checkout', Checkout::class)->name('checkout');
-Route::get('/orders/{order}', OrderConfirmation::class)->name('orders.confirmation');
-Route::get('/tickets/{attendee}', Ticket::class)->name('tickets.show');
+Route::livewire('/events', EventIndex::class)->name('events.index');
+Route::livewire('/o/{organiser}', OrganiserPage::class)->name('organisers.show');
+Route::livewire('/e/{event}', EventPage::class)->name('events.show');
+Route::livewire('/e/{event}/checkout', Checkout::class)->name('checkout');
+Route::livewire('/orders/{order}', OrderConfirmation::class)->name('orders.confirmation');
+Route::livewire('/tickets/{attendee}', Ticket::class)->name('tickets.show');
 Route::get('/tickets/{attendee}/pdf', [TicketPdfController::class, 'show'])->name('tickets.pdf');
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
