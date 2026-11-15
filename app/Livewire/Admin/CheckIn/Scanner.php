@@ -76,42 +76,44 @@ class Scanner extends Component
             return;
         }
 
+        $label = $attendee->name() ?: $attendee->reference;
+
         if ($attendee->is_refunded) {
-            $this->errorMessage = "{$attendee->name()} – this ticket has been refunded.";
+            $this->errorMessage = "{$label} – this ticket has been refunded.";
 
             return;
         }
 
         if ($attendee->is_cancelled) {
-            $this->errorMessage = "{$attendee->name()} – this ticket has been cancelled.";
+            $this->errorMessage = "{$label} – this ticket has been cancelled.";
 
             return;
         }
 
         if (! $attendee->order?->isCompleted()) {
-            $this->errorMessage = "{$attendee->name()} – the order for this ticket is not completed.";
+            $this->errorMessage = "{$label} – the order for this ticket is not completed.";
 
             return;
         }
 
         if ($attendee->isCheckedIn()) {
-            $this->errorMessage = "{$attendee->name()} was already checked in at {$attendee->checked_in_at?->format('H:i')}.";
+            $this->errorMessage = "{$label} was already checked in at {$attendee->checked_in_at?->format('H:i')}.";
 
             return;
         }
 
         if (! $orders->checkIn($attendee, auth()->user())) {
-            $this->errorMessage = "Could not check in {$attendee->name()}.";
+            $this->errorMessage = "Could not check in {$label}.";
 
             return;
         }
 
         $this->reference = '';
         $this->successMessage = $attendee->ticket?->title
-            ? "{$attendee->name()} – {$attendee->ticket->title}"
-            : "{$attendee->name()} checked in.";
+            ? "{$label} – {$attendee->ticket->title}"
+            : "{$label} checked in.";
 
-        $this->dispatch('checkin', name: $attendee->name());
+        $this->dispatch('checkin', name: $label);
     }
 
     private function normaliseReference(string $reference): string

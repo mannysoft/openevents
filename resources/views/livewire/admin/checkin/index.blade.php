@@ -1,12 +1,13 @@
-<div class="space-y-6">
-    <x-admin.event-nav :event="$event" />
-
-    <div>
-        <h2 class="text-xl font-semibold">Check-in</h2>
-        <p class="text-sm text-slate-500">{{ $event->title }}</p>
+<div>
+    <div class="mb-4">
+        <p class="text-sm text-slate-500">{{ $event->organiser->name }}</p>
+        <h2 class="text-xl font-semibold tracking-tight">{{ $event->title }}</h2>
+        <p class="text-sm text-slate-500">Check-in</p>
     </div>
 
-    <div class="grid grid-cols-3 gap-3">
+    <x-admin.event-nav :event="$event" />
+
+    <div class="mb-4 grid grid-cols-3 gap-3">
         <x-ui.card>
             <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Total</p>
             <p class="mt-1 text-2xl font-semibold">{{ number_format($counters['total']) }}</p>
@@ -24,7 +25,7 @@
     <div x-data="{ flash: false }"
          x-on:checkin.window="flash = true; setTimeout(() => flash = false, 1500)"
          :class="flash ? 'rounded-xl ring-4 ring-emerald-400/70' : 'rounded-xl'"
-         class="grid gap-6 lg:grid-cols-2">
+         class="mb-6 grid gap-4 lg:grid-cols-2">
         <x-ui.card title="Manual entry">
             <form wire:submit="checkIn" class="flex flex-col gap-3 sm:flex-row sm:items-start">
                 <div class="flex-1">

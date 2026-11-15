@@ -46,11 +46,28 @@ class LegacyImporter
         'discount_codes',
     ];
 
+    /**
+     * Parents that must be imported for an entity's foreign keys to resolve.
+     */
+    private const DEPENDENCIES = [
+        'organisers' => ['users'],
+        'events' => ['organisers'],
+        'tickets' => ['events'],
+        'orders' => ['events', 'tickets'],
+        'attendees' => ['orders', 'tickets'],
+        'questions' => ['events'],
+        'answers' => ['questions', 'attendees'],
+        'discount_codes' => ['events'],
+    ];
+
     /** @var array<string, array{created: int, updated: int, skipped: int}> */
     private array $counts = [];
 
     /** @var list<string> */
     private array $warnings = [];
+
+    /** @var array<string, array{label: string, count: int, examples: list<string>}> */
+    private array $warningGroups = [];
 
     /** @var array<int, int> legacy account id => user id */
     private array $userMap = [];
@@ -166,10 +183,39 @@ class LegacyImporter
             return self::ENTITIES;
         }
 
+        $requested = self::withDependencies($requested);
+
         return array_values(array_filter(
             self::ENTITIES,
             fn (string $entity) => isset($requested[$entity]),
         ));
+    }
+
+    /**
+     * Add the parents of every requested entity so the import can always
+     * resolve its foreign keys.
+     *
+     * @param  array<string, true>  $requested
+     * @return array<string, true>
+     */
+    private static function withDependencies(array $requested): array
+    {
+        $queue = array_keys($requested);
+
+        while ($queue !== []) {
+            $entity = array_pop($queue);
+
+            foreach (self::DEPENDENCIES[$entity] ?? [] as $dependency) {
+                if (isset($requested[$dependency])) {
+                    continue;
+                }
+
+                $requested[$dependency] = true;
+                $queue[] = $dependency;
+            }
+        }
+
+        return $requested;
     }
 
     public function run(array $entities): void
@@ -227,7 +273,16 @@ class LegacyImporter
      */
     public function warnings(): array
     {
-        return $this->warnings;
+        $warnings = $this->warnings;
+
+        foreach ($this->warningGroups as $group) {
+            $examples = array_slice($group['examples'], 0, 3);
+
+            $warnings[] = $group['count'].' '.$group['label']
+                .($examples === [] ? '' : ' (e.g. '.implode('; ', $examples).')');
+        }
+
+        return array_values(array_unique($warnings));
     }
 
     // -----------------------------------------------------------------
@@ -278,7 +333,11 @@ class LegacyImporter
             $password = $passwords->get($row->id);
 
             if ($password === null || $password === '') {
-                $this->warn("account {$row->id} ({$email}) had no legacy password; a random one was set.");
+                $this->groupWarn(
+                    'password',
+                    'legacy account(s) had no password, a random one was set',
+                    "{$email}",
+                );
                 $password = Str::random(40);
             }
 
@@ -618,7 +677,7 @@ class LegacyImporter
 
             if ($email === '') {
                 $email = "legacy-order-{$row->id}@import.invalid";
-                $this->warn("order {$row->id} had no email, placeholder {$email} used.");
+                $this->groupWarn('order_email', 'order(s) had no email, a placeholder was used', $email);
             }
 
             $attributes = [
@@ -888,7 +947,7 @@ class LegacyImporter
 
             if (isset($seen[$key])) {
                 $this->skip('discount_codes', "access code {$row->id} ({$code}) duplicated within event {$row->event_id}");
-                $this->warn("event {$row->event_id}: duplicate access code {$code} skipped.");
+                $this->groupWarn('duplicate_access_code', 'access code(s) duplicated within an event were skipped', "event {$row->event_id}: {$code}");
 
                 continue;
             }
@@ -899,7 +958,7 @@ class LegacyImporter
             $amount = $row->amounts ?? $row->amount ?? null;
 
             if ($amount === null && $this->legacyHasColumn('event_access_codes', 'amounts')) {
-                $this->warn("access code {$code} (event {$row->event_id}) has no amounts; imported with a 0% discount.");
+                $this->groupWarn('access_code_amounts', 'access code(s) had no amount, imported as a 0% discount', "event {$row->event_id}: {$code}");
             }
 
             $attributes = [
@@ -960,10 +1019,21 @@ class LegacyImporter
         }
     }
 
+    /**
+     * In a dry run nothing is written, so report on the legacy rows that this
+     * run processed instead of the target database.
+     */
     private function legacyEventsWithoutTickets(): int
     {
+        $ids = array_keys($this->eventMeta);
+
+        if ($ids === []) {
+            return 0;
+        }
+
         return $this->legacy()
             ->table('events')
+            ->whereIn('id', $ids)
             ->whereNull('deleted_at')
             ->whereNotExists(fn ($query) => $query->from('tickets')
                 ->whereColumn('tickets.event_id', 'events.id')
@@ -973,8 +1043,15 @@ class LegacyImporter
 
     private function legacyOrdersWithoutAttendees(): int
     {
+        $ids = array_keys($this->orderMap);
+
+        if ($ids === []) {
+            return 0;
+        }
+
         return $this->legacy()
             ->table('orders')
+            ->whereIn('id', $ids)
             ->whereNull('deleted_at')
             ->whereNotExists(fn ($query) => $query->from('attendees')
                 ->whereColumn('attendees.order_id', 'orders.id')
@@ -1194,7 +1271,7 @@ class LegacyImporter
         try {
             return Carbon::parse((string) $value, $timezone)->utc()->toDateTimeString();
         } catch (Throwable) {
-            $this->warn("could not parse date [{$value}] in timezone [{$timezone}].");
+            $this->groupWarn('dates', 'date value(s) could not be parsed', "[{$value}] in [{$timezone}]");
 
             return null;
         }
@@ -1274,7 +1351,7 @@ class LegacyImporter
         }
 
         if (Order::query()->where('stripe_payment_intent_id', $intent)->exists()) {
-            $this->warn("order {$row->id}: payment intent {$intent} already exists, it was not copied.");
+            $this->groupWarn('payment_intent', 'order(s) had a duplicate payment intent that was not copied', "order {$row->id}: {$intent}");
 
             return null;
         }
@@ -1328,7 +1405,7 @@ class LegacyImporter
         }
 
         if ($reference !== '') {
-            $this->warn("order reference {$reference} was already taken, a new one was generated.");
+            $this->groupWarn('order_reference', 'order reference(s) were already taken and regenerated', $reference);
         }
 
         do {
@@ -1410,7 +1487,7 @@ class LegacyImporter
         $source = $this->locateLegacyFile($path, $directory);
 
         if ($source === null) {
-            $this->warn("missing legacy file: {$path}");
+            $this->groupWarn('missing_files', 'legacy file(s) could not be found', $path);
 
             return $this->fileCache[$path] = null;
         }
@@ -1429,7 +1506,7 @@ class LegacyImporter
                 fclose($handle);
             }
         } catch (Throwable $e) {
-            $this->warn("could not copy {$path}: ".$e->getMessage());
+            $this->groupWarn('copy_failures', 'legacy file(s) could not be copied', "{$path}: {$e->getMessage()}");
 
             return $this->fileCache[$path] = null;
         }
@@ -1516,7 +1593,7 @@ class LegacyImporter
     private function skip(string $entity, string $reason): void
     {
         $this->counts[$entity]['skipped']++;
-        $this->warn($reason);
+        $this->groupWarn('skipped:'.$entity, "{$entity} row(s) skipped", $reason);
     }
 
     private function warn(string $message): void
@@ -1526,9 +1603,27 @@ class LegacyImporter
         }
     }
 
+    /**
+     * Repetitive problems (one per legacy row) are aggregated so the summary
+     * stays readable.
+     */
+    private function groupWarn(string $key, string $label, string $example): void
+    {
+        $this->warningGroups[$key] ??= ['label' => $label, 'count' => 0, 'examples' => []];
+        $this->warningGroups[$key]['count']++;
+
+        if (count($this->warningGroups[$key]['examples']) < 5 && ! in_array($example, $this->warningGroups[$key]['examples'], true)) {
+            $this->warningGroups[$key]['examples'][] = $example;
+        }
+    }
+
     private function warnUnmatchedClub(string $identifier): void
     {
-        $this->warn("club [{$identifier}] has no matching organiser, its Stripe account was not imported.");
+        $this->groupWarn(
+            'unmatched_clubs',
+            'club(s) with a Stripe account had no matching organiser',
+            (string) $identifier,
+        );
     }
 
     private function log(string $message): void

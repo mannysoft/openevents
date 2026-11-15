@@ -185,8 +185,14 @@ class ImportLegacyData extends Command
         $this->newLine();
         $this->warn(count($warnings).' warning(s):');
 
-        foreach ($warnings as $warning) {
+        $shown = array_slice($warnings, 0, 40);
+
+        foreach ($shown as $warning) {
             $this->line(' • '.$warning);
+        }
+
+        if (count($warnings) > count($shown)) {
+            $this->line(' …and '.(count($warnings) - count($shown)).' more warning(s).');
         }
     }
 }

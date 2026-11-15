@@ -59,7 +59,7 @@
                     <label for="cover_image" class="mb-1 block text-sm font-medium">Cover image</label>
 
                     <div class="flex items-center gap-4">
-                        @if ($cover_image)
+                        @if ($cover_image && $cover_image->isPreviewable())
                             <img src="{{ $cover_image->temporaryUrl() }}" alt="Cover preview" class="h-20 w-32 rounded-lg border border-slate-200 object-cover">
                         @elseif ($event?->coverImageUrl())
                             <img src="{{ $event->coverImageUrl() }}" alt="{{ $event->title }} cover" class="h-20 w-32 rounded-lg border border-slate-200 object-cover">

@@ -94,7 +94,7 @@ class Index extends Component
                 ->orderByDesc('id')
                 ->limit(10)
                 ->get(),
-        ])->title('Messages · '.$this->event->title);
+        ]);
     }
 
     /**

@@ -2,7 +2,9 @@
 
 <div class="space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
-        <p class="text-sm text-slate-500">Completed ticket sales for the organisers you manage.</p>
+        <p class="text-sm text-slate-500">
+            Completed ticket sales for {{ $selectedOrganiser?->name ?? 'all organisers' }}.
+        </p>
     </div>
 
     <x-ui.card>

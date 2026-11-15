@@ -53,7 +53,7 @@
                     <label for="logo" class="mb-1 block text-sm font-medium">Logo</label>
 
                     <div class="flex items-center gap-4">
-                        @if ($logo)
+                        @if ($logo && $logo->isPreviewable())
                             <img src="{{ $logo->temporaryUrl() }}" alt="Logo preview" class="h-14 w-14 rounded-lg border border-slate-200 object-cover">
                         @elseif ($organiser?->logoUrl())
                             <img src="{{ $organiser->logoUrl() }}" alt="{{ $organiser->name }} logo" class="h-14 w-14 rounded-lg border border-slate-200 object-cover">
