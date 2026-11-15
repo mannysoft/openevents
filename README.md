@@ -17,13 +17,13 @@ Organisers sign up, create events and tickets, and take payments through **their
 
 ## Documentation
 
-The user and developer guides live in [`docs/`](docs/README.md) and are built with
+The user and developer guides live in [`docs-site/`](docs-site/README.md) and are built with
 [Docusaurus](https://docusaurus.io). They are a separate npm project so they never
 interfere with the Vite build above.
 
 ```bash
 npm run docs:dev     # local dev server at http://localhost:3000/openevents/
-npm run docs:build   # production build into docs/build
+npm run docs:build   # production build into docs-site/build
 npm run docs:serve   # serve the built site
 ```
 

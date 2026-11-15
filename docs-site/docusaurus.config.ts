@@ -8,8 +8,8 @@ const branch = 'main';
 // Overridable so forks and CI can deploy to a different origin or path.
 const siteUrl = process.env.DOCS_URL ?? 'https://mannysoft.github.io';
 const baseUrl = process.env.DOCS_BASE_URL ?? '/openevents/';
-const docsEditUrl = `https://github.com/${repository}/edit/${branch}/docs/`;
-const blogEditUrl = `https://github.com/${repository}/edit/${branch}/docs/`;
+const docsEditUrl = `https://github.com/${repository}/edit/${branch}/docs-site/`;
+const blogEditUrl = `https://github.com/${repository}/edit/${branch}/docs-site/`;
 
 const config: Config = {
   title: 'Events Documentation',

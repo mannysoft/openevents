@@ -25,7 +25,7 @@ If you are looking for task-oriented instructions for organisers, see the
 | Assets | Vite 8, Tailwind 4, `laravel-vite-plugin` | see `package.json` |
 | Tests | PHPUnit 12 | `phpunit.xml` |
 | Formatting | Laravel Pint 1.27 | no `pint.json` |
-| Docs | Docusaurus 3 | separate project in `docs/` |
+| Docs | Docusaurus 3 | separate project in `docs-site/` |
 
 ## Repository map
 

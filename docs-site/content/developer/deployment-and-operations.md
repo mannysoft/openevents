@@ -137,15 +137,16 @@ the next `charge.refunded` event, but it cannot corrupt Stripe.
 
 ## Documentation site
 
-The Docusaurus site in `docs/` is a separate npm project. `npm run docs:dev`,
+The Docusaurus site in `docs-site/` is a separate npm project. `npm run docs:dev`,
 `npm run docs:build` and `npm run docs:serve` wrap
-`npm --prefix docs run start|build|serve`; `npm --prefix docs run build` always works. Node
-20+ is required and `docs/package.json` pins Docusaurus 3.10.2.
+`npm --prefix docs-site run start|build|serve`; `npm --prefix docs-site run build` always
+works. Node 20+ is required and `docs-site/package.json` pins Docusaurus 3.10.2.
 
-`.github/workflows/docs.yml` runs on changes under `docs/**` and on the workflow itself. It
-runs `npm ci`, `npm run typecheck`, then `npm run build` with `DOCS_URL` and `DOCS_BASE_URL`
-set from the repository, so forks publish to their own path. Pull requests build only; pushes
-to `main` and manual dispatch upload `docs/build` and deploy to Pages.
+`.github/workflows/docs.yml` ("Docs site") runs on changes under `docs-site/**` and on the
+workflow itself. The build job runs `npm ci` and `npm run build` on Node 22 with `DOCS_URL`
+and `DOCS_BASE_URL` set from the repository context, so forks publish to their own path.
+Pull requests build only; pushes to `main` and manual dispatch upload `docs-site/build` as
+the Pages artifact and a separate deploy job publishes it.
 
 One-time setup: **Settings → Pages → Build and deployment → Source** must be
 **GitHub Actions**, otherwise the deploy job has no target. `onBrokenLinks: 'throw'` and

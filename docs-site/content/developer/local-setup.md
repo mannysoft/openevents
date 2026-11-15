@@ -14,7 +14,7 @@ render unstyled pages rather than fail.
 | --- | --- | --- |
 | PHP | 8.3+ (CI uses 8.4) | Extensions used in CI: `mbstring`, `pdo_sqlite`, `bcmath`, `intl`, `gd` |
 | Composer | 2 | |
-| Node / npm | Node 20+ | Builds Vite assets and `docs/` |
+| Node / npm | Node 20+ | Builds Vite assets and `docs-site/` |
 | MySQL | 8 | Or SQLite for a zero-setup start |
 
 ## First run
@@ -116,11 +116,11 @@ The docs are a separate npm project:
 
 ```bash
 npm run docs:dev     # docusaurus start
-npm run docs:build   # docusaurus build into docs/build
+npm run docs:build   # docusaurus build into docs-site/build
 npm run docs:serve   # serve the built site
 ```
 
-The same commands work as `npm --prefix docs run <script>`. See
+The same commands work as `npm --prefix docs-site run <script>`. See
 [deployment and operations](deployment-and-operations.md).
 
 ## Common problems

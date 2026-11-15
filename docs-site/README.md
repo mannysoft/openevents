@@ -8,13 +8,13 @@ build at the repository root.
 
 ## Requirements
 
-- Node.js 20 or newer
+- Node.js 20 or newer (CI builds on Node 22)
 - npm 10 or newer
 
 ## Local development
 
 ```bash
-cd docs
+cd docs-site
 npm install
 npm run start        # http://localhost:3000/openevents/
 ```
@@ -49,19 +49,22 @@ and that file.
 
 ## Deployment
 
-`.github/workflows/docs.yml` builds the site on every pull request and deploys it to
-GitHub Pages on pushes to `main` (and on manual dispatch).
+`.github/workflows/docs.yml` ("Docs site") builds the site on every pull request and
+deploys it to GitHub Pages on pushes to `main` and on manual dispatch. The build job runs
+`npm ci` and `npm run build` in `docs-site/` on Node 22, then uploads `docs-site/build`
+as the Pages artifact; a separate deploy job publishes it.
 
 One-time setup in the repository settings:
 
 1. **Settings → Pages → Build and deployment → Source**: choose **GitHub Actions**.
-2. Push to `main`, or run the **Docs** workflow manually.
+2. Push to `main`, or run the **Docs site** workflow manually.
 
 The public URL is <https://mannysoft.github.io/openevents/>.
 
 `url` and `baseUrl` default to that location and can be overridden with the `DOCS_URL`
-and `DOCS_BASE_URL` environment variables, which is what the workflow does so forks
-publish to their own path.
+and `DOCS_BASE_URL` environment variables. The workflow sets both from the GitHub context
+(`https://<owner>.github.io` and `/<repo>/`), so forks publish to their own path without
+editing the config.
 
 ## Styling
 
