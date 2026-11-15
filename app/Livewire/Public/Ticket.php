@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Livewire\Public\Ticket;
+
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+
+#[Layout('components.layouts.public')]
+class Ticket extends Component
+{
+    public function render()
+    {
+        return view('livewire.public.ticket');
+    }
+}
