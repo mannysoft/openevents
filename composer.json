@@ -3,60 +3,26 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": [
-        "laravel",
-        "framework"
-    ],
-    "license": "AAL",
-    "homepage": "https://laravel.com",
+    "keywords": ["laravel", "framework"],
+    "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "ext-json": "*",
+        "php": "^8.3",
         "barryvdh/laravel-dompdf": "^3.0",
-        "bugsnag/bugsnag-laravel": "^2.0",
-        "filament/filament": "^3.2",
-        "graham-campbell/markdown": "16.0",
-        "intervention/image": "^3.9",
-        "laracasts/utilities": "^3.0",
-        "laravel/framework": "^12.0",
-        "laravel/nightwatch": "^1.7",
-        "laravel/socialite": "^5.0",
-        "laravel/tinker": "^2.10.1",
-        "league/flysystem-aws-s3-v3": "^3.0",
-        "league/omnipay": "^3.0",
+        "endroid/qr-code": "^6.0",
+        "laravel/framework": "^13.17",
+        "laravel/tinker": "^3.0",
+        "livewire/livewire": "^4.0",
         "maatwebsite/excel": "^3.1",
-        "mautic/api-library": "^3.1",
-        "mcamara/laravel-localization": "^2.0",
-        "mews/purifier": "^3.4",
-        "milon/barcode": "^12.0",
-        "nitmedia/wkhtml2pdf": "dev-master",
-        "omnipay/common": "^3.0",
-        "omnipay/paypal": "^3.0",
-        "omnipay/stripe": "^3.1",
-        "php-http/curl-client": "^2.3",
-        "php-http/message": "^1.6",
-        "predis/predis": "~2.2",
-        "rap2hpoutre/laravel-log-viewer": "^2.3",
-        "spatie/browsershot": "^5.2",
-        "spatie/calendar-links": "^1.11",
-        "spatie/laravel-html": "^3.11",
-        "spatie/laravel-pdf": "^2.2",
-        "stevebauman/location": "^7.6",
-        "stripe/stripe-php": "^16.2",
-        "superbalist/php-money": "^2.0",
-        "tinymce/tinymce": "^7.4",
-        "vinelab/http": "~1.5"
+        "stripe/stripe-php": "^23.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.6",
-        "barryvdh/laravel-ide-helper": "^3.2",
         "fakerphp/faker": "^1.23",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.13",
-        "laravel/sail": "^1.41",
+        "laravel/pail": "^1.2.5",
+        "laravel/pao": "^1.0.6",
+        "laravel/pint": "^1.27",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^12.5.12"
     },
     "autoload": {
         "psr-4": {
@@ -71,10 +37,25 @@
         }
     },
     "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "npm install --ignore-scripts",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan dev"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "@php artisan test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi",
-            "@php artisan filament:upgrade"
+            "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -87,9 +68,8 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
     },
     "extra": {

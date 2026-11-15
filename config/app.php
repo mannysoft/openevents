@@ -52,13 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://globalwomanevents.com'),
-
-    'lounge_url' => env('LOUNGE_URL', 'https://globalwomanlounge.com'),
-
-    'lobby_url' => env('LOBBY_URL', 'https://lobby.globalwomanclub.com'),
-
-    'asset_url' => env('ASSET_URL', null),
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'Europe/London'),
+    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -107,7 +101,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 
@@ -120,29 +114,13 @@ return [
     | manage Laravel's "maintenance mode" status. The "cache" driver will
     | allow maintenance mode to be controlled across multiple machines.
     |
-    | Supported drivers: "file", "cache"
+    | Supported drivers: "file", "cache", "array"
     |
     */
 
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
-    ],
-
-    /*
-    | Ticket PDFs (App\Jobs\GenerateTicket, Browsershot). The process that renders them is the
-    | PHP user (forge in production), so Chrome, Node and the puppeteer package must be readable
-    | and executable by that user. BROWSERSHOT_CHROME_PATH wins over the older CHROME_PATH. The
-    | default is the value this file always had, so nothing changes until the server is fixed.
-    | The other three are unset by default, which keeps Browsershot's own defaults (`node` on
-    | the PATH, `npm root -g` for the module path).
-    */
-    'chrome_path' => env('BROWSERSHOT_CHROME_PATH', env('CHROME_PATH', '/home/ubuntu/.cache/puppeteer/chrome/linux-145.0.7632.67/chrome-linux64/chrome')),
-
-    'browsershot' => [
-        'node_binary' => env('BROWSERSHOT_NODE_BINARY'),
-        'npm_binary' => env('BROWSERSHOT_NPM_BINARY'),
-        'node_module_path' => env('BROWSERSHOT_NODE_MODULE_PATH'),
     ],
 
 ];

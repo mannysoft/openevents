@@ -1,5 +1,0 @@
-{
-    "image": "ubuntu:latest",
-    "postCreateCommand": "sudo apt update && sudo apt install -y mysql-server && sudo service mysql start && mysql -u root -e \"ALTER USER 'root'@'localhost' IDENTIFIED BY 'pCt7DRVAqw6ENnVc';\" && mysql -u root -p 'pCt7DRVAqw6ENnVc' -e \"CREATE DATABASE events;\"",
-    "forwardPorts": [3306]
-}
