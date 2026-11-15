@@ -47,6 +47,12 @@ class LegacyImporter
     ];
 
     /**
+     * Rows that are imported as a side effect of another entity but are still
+     * reported in the summary.
+     */
+    public const SUMMARY_ENTITIES = [...self::ENTITIES, 'order_items'];
+
+    /**
      * Parents that must be imported for an entity's foreign keys to resolve.
      */
     private const DEPENDENCIES = [
@@ -102,6 +108,9 @@ class LegacyImporter
     /** @var array<int, string> legacy event id => image path */
     private array $eventImages = [];
 
+    /** @var array<int, array<string, int>> legacy event id => lowercased ticket title => ticket id */
+    private array $ticketsByEventTitle = [];
+
     /** @var array<string, true> */
     private array $usedEventSlugs = [];
 
@@ -118,7 +127,7 @@ class LegacyImporter
         private readonly ?int $limit = null,
         private readonly ?Closure $logger = null,
     ) {
-        foreach (self::ENTITIES as $entity) {
+        foreach (self::SUMMARY_ENTITIES as $entity) {
             $this->counts[$entity] = ['created' => 0, 'updated' => 0, 'skipped' => 0];
         }
     }
@@ -381,7 +390,8 @@ class LegacyImporter
             }
 
             $currency = $this->currencyCode($row->currency_id);
-            $timezone = $this->timezoneName($row->timezone_id);
+            $timezone = $this->timezoneName($row->timezone_id)
+                ?? (string) config('events.default_timezone', 'Europe/London');
             $logo = $this->copyLegacyFile($row->logo_path, 'organisers');
 
             $attributes = [
@@ -452,20 +462,24 @@ class LegacyImporter
                 continue;
             }
 
-            if ($this->dryRun) {
-                $this->counts['organisers']['updated']++;
-
-                continue;
-            }
-
             $match->forceFill([
                 'stripe_account_id' => $club->stripe_account_id,
                 'stripe_charges_enabled' => true,
                 'stripe_details_submitted' => true,
                 'stripe_onboarded_at' => $club->onboarded_at ? Carbon::parse($club->onboarded_at) : now(),
-            ])->save();
+            ]);
+
+            if (! $match->isDirty()) {
+                $this->counts['organisers']['skipped']++;
+
+                continue;
+            }
 
             $this->counts['organisers']['updated']++;
+
+            if (! $this->dryRun) {
+                $match->save();
+            }
         }
     }
 
@@ -680,6 +694,8 @@ class LegacyImporter
                 $this->groupWarn('order_email', 'order(s) had no email, a placeholder was used', $email);
             }
 
+            $existing = Order::query()->where('legacy_id', $row->id)->first();
+
             $attributes = [
                 'event_id' => (int) $event['id'],
                 'organiser_id' => (int) $event['organiser_id'],
@@ -692,7 +708,7 @@ class LegacyImporter
                 'tax_total' => $tax,
                 'total' => $total,
                 'currency_code' => $event['currency'],
-                'stripe_payment_intent_id' => $this->paymentIntent($row),
+                'stripe_payment_intent_id' => $this->paymentIntent($row, $existing),
                 'stripe_account_id' => $this->nullIfBlank($row->stripe_account_id),
                 'refunded_amount' => StatusMapper::priceToMinor($row->amount_refunded ?? 0, $event['currency']),
                 'paid_at' => $status->isPaid() ? $paidAt : null,
@@ -700,8 +716,6 @@ class LegacyImporter
                 'cancelled_at' => $status === OrderStatus::Cancelled ? $paidAt : null,
                 'legacy_id' => (int) $row->id,
             ];
-
-            $existing = Order::query()->where('legacy_id', $row->id)->first();
 
             if ($existing !== null) {
                 $id = (int) $existing->getKey();
@@ -720,24 +734,50 @@ class LegacyImporter
 
     private function importOrderItems(int $orderId, int $legacyEventId, array $event, $items): void
     {
+        $desired = [];
+
+        foreach ($items as $item) {
+            $unitPrice = StatusMapper::priceToMinor($item->unit_price, $event['currency']);
+            $quantity = max(0, (int) $item->quantity);
+
+            $desired[] = [
+                'ticket_id' => $this->ticketIdByTitle($legacyEventId, (string) $item->title),
+                'description' => trim((string) $item->title) ?: 'Ticket',
+                'unit_price' => $unitPrice,
+                'quantity' => $quantity,
+                'total' => $unitPrice * $quantity,
+            ];
+        }
+
+        $current = OrderItem::query()
+            ->where('order_id', $orderId)
+            ->orderBy('id')
+            ->get(['ticket_id', 'description', 'unit_price', 'quantity', 'total'])
+            ->map(fn (OrderItem $item) => [
+                'ticket_id' => $item->ticket_id === null ? null : (int) $item->ticket_id,
+                'description' => (string) $item->description,
+                'unit_price' => (int) $item->unit_price,
+                'quantity' => (int) $item->quantity,
+                'total' => (int) $item->total,
+            ])
+            ->all();
+
+        if ($current === $desired) {
+            $this->counts['order_items']['skipped'] += count($desired);
+
+            return;
+        }
+
+        $this->counts['order_items'][$current === [] ? 'created' : 'updated'] += count($desired);
+
         if ($this->dryRun) {
             return;
         }
 
         OrderItem::query()->where('order_id', $orderId)->delete();
 
-        foreach ($items as $item) {
-            $unitPrice = StatusMapper::priceToMinor($item->unit_price, $event['currency']);
-            $quantity = max(0, (int) $item->quantity);
-
-            OrderItem::create([
-                'order_id' => $orderId,
-                'ticket_id' => $this->ticketIdByTitle($legacyEventId, (string) $item->title),
-                'description' => trim((string) $item->title) ?: 'Ticket',
-                'unit_price' => $unitPrice,
-                'quantity' => $quantity,
-                'total' => $unitPrice * $quantity,
-            ]);
+        foreach ($desired as $attributes) {
+            OrderItem::create($attributes + ['order_id' => $orderId]);
         }
     }
 
@@ -1167,10 +1207,8 @@ class LegacyImporter
      */
     private function ticketIdByTitle(int $legacyEventId, string $title): ?int
     {
-        static $titleMap = [];
-
-        if (! isset($titleMap[$legacyEventId])) {
-            $titleMap[$legacyEventId] = Ticket::query()
+        if (! isset($this->ticketsByEventTitle[$legacyEventId])) {
+            $this->ticketsByEventTitle[$legacyEventId] = Ticket::query()
                 ->whereIn('legacy_id', $this->legacy()
                     ->table('tickets')
                     ->where('event_id', $legacyEventId)
@@ -1180,7 +1218,7 @@ class LegacyImporter
                 ->all();
         }
 
-        return $titleMap[$legacyEventId][Str::lower(trim($title))] ?? null;
+        return $this->ticketsByEventTitle[$legacyEventId][Str::lower(trim($title))] ?? null;
     }
 
     // -----------------------------------------------------------------
@@ -1295,13 +1333,17 @@ class LegacyImporter
         }
     }
 
-    private function coordinate(mixed $value): ?float
+    /**
+     * The latitude/longitude columns are decimal(10, 7); returning a string with
+     * the same precision keeps re-imports from looking dirty.
+     */
+    private function coordinate(mixed $value): ?string
     {
         if ($value === null || $value === '' || ! is_numeric($value)) {
             return null;
         }
 
-        return (float) $value;
+        return number_format((float) $value, 7, '.', '');
     }
 
     private function countryCode(mixed $code, mixed $name = null): ?string
@@ -1342,18 +1384,22 @@ class LegacyImporter
     /**
      * @param  object  $row  Legacy order row.
      */
-    private function paymentIntent(object $row): ?string
+    private function paymentIntent(object $row, ?Order $existing): ?string
     {
         $intent = $this->nullIfBlank($row->payment_intent ?? null);
 
         if ($intent === null) {
-            return null;
+            return $existing?->stripe_payment_intent_id;
+        }
+
+        if ($existing?->stripe_payment_intent_id === $intent) {
+            return $intent;
         }
 
         if (Order::query()->where('stripe_payment_intent_id', $intent)->exists()) {
             $this->groupWarn('payment_intent', 'order(s) had a duplicate payment intent that was not copied', "order {$row->id}: {$intent}");
 
-            return null;
+            return $existing?->stripe_payment_intent_id;
         }
 
         return $intent;
@@ -1581,13 +1627,21 @@ class LegacyImporter
 
     private function update(string $entity, Model $model, array $attributes): void
     {
+        $model->fill($attributes);
+
+        if (! $model->isDirty()) {
+            $this->counts[$entity]['skipped']++;
+
+            return;
+        }
+
         $this->counts[$entity]['updated']++;
 
         if ($this->dryRun) {
             return;
         }
 
-        $model->fill($attributes)->save();
+        $model->save();
     }
 
     private function skip(string $entity, string $reason): void

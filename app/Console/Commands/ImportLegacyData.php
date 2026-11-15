@@ -66,7 +66,7 @@ class ImportLegacyData extends Command
         $importer = new LegacyImporter(
             $dryRun,
             $limit === null ? null : (int) $limit,
-            fn (string $message) => $this->line($message),
+            fn (string $message) => $this->info($message),
         );
 
         try {
@@ -158,8 +158,10 @@ class ImportLegacyData extends Command
         $counts = $importer->counts();
         $rows = [];
 
-        foreach (LegacyImporter::ENTITIES as $entity) {
-            $ran = in_array($entity, $entities, true);
+        foreach (LegacyImporter::SUMMARY_ENTITIES as $entity) {
+            $ran = $entity === 'order_items'
+                ? in_array('orders', $entities, true)
+                : in_array($entity, $entities, true);
             $row = $counts[$entity] ?? ['created' => 0, 'updated' => 0, 'skipped' => 0];
 
             $rows[] = [
