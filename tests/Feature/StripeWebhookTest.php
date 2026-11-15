@@ -122,20 +122,37 @@ class StripeWebhookTest extends TestCase
         $this->assertSame(1000, $order->refresh()->refunded_amount);
     }
 
-    public function test_account_updated_syncs_connect_flags(): void
+    public function test_account_updated_resyncs_connect_flags_from_the_v2_account(): void
     {
         config(['services.stripe.webhook_secret' => null]);
 
         $organiser = Organiser::factory()->create(['stripe_account_id' => 'acct_hook']);
 
+        $this->fakeStripe();
+
         $this->postJson('/stripe/webhook', $this->payload('account.updated', [
             'id' => 'acct_hook',
             'object' => 'account',
-            'charges_enabled' => true,
-            'details_submitted' => true,
         ]))->assertOk();
 
         $this->assertTrue($organiser->refresh()->stripeReady());
+    }
+
+    public function test_account_updated_is_acknowledged_when_stripe_is_unavailable(): void
+    {
+        config(['services.stripe.webhook_secret' => null]);
+
+        $organiser = Organiser::factory()->create(['stripe_account_id' => 'acct_hook']);
+
+        $stripe = $this->fakeStripe();
+        $stripe->failAccountRetrieve = true;
+
+        $this->postJson('/stripe/webhook', $this->payload('account.updated', [
+            'id' => 'acct_hook',
+            'object' => 'account',
+        ]))->assertOk();
+
+        $this->assertFalse($organiser->refresh()->stripeReady());
     }
 
     public function test_unhandled_types_are_acknowledged(): void

@@ -22,9 +22,17 @@ class FakeStripeHttpClient implements ClientInterface
     /** @var array<string, array<string, mixed>> */
     public array $refunds = [];
 
-    public bool $chargesEnabled = true;
+    public string $cardPaymentsStatus = 'active';
 
-    public bool $detailsSubmitted = true;
+    public string $stripeTransfersStatus = 'active';
+
+    /** @var array<int, array{code: string, resolution: string}> */
+    public array $cardPaymentsStatusDetails = [];
+
+    /** @var array<int, array{awaiting_action_from: string, description: string, minimum_deadline: array{status: string}, errors?: array<int, array{code: string, description: string}>}> */
+    public array $requirementEntries = [];
+
+    public bool $failAccountRetrieve = false;
 
     private int $sequence = 0;
 
@@ -35,48 +43,38 @@ class FakeStripeHttpClient implements ClientInterface
 
         $this->requests[] = ['method' => $method, 'path' => $path, 'params' => $params];
 
-        if ($method === 'post' && $path === '/v1/accounts') {
+        if ($method === 'post' && $path === '/v2/core/accounts') {
             $id = 'acct_fake'.(++$this->sequence);
 
-            $this->accounts[$id] = [
-                'id' => $id,
-                'object' => 'account',
-                'type' => $params['type'] ?? 'express',
-                'email' => $params['email'] ?? null,
-                'country' => $params['country'] ?? 'GB',
-                'charges_enabled' => $this->chargesEnabled,
-                'details_submitted' => $this->detailsSubmitted,
-                'requirements' => [
-                    'currently_due' => [],
-                    'eventually_due' => [],
-                    'disabled_reason' => null,
-                ],
-            ];
+            $this->accounts[$id] = $this->v2Account($id);
 
             return $this->respond($this->accounts[$id]);
         }
 
-        if ($method === 'get' && preg_match('#^/v1/accounts/([^/]+)$#', $path, $matches) === 1) {
-            $account = $this->accounts[$matches[1]] ?? [
-                'id' => $matches[1],
-                'object' => 'account',
-                'type' => 'express',
-                'requirements' => ['currently_due' => [], 'eventually_due' => [], 'disabled_reason' => null],
-            ];
+        if ($method === 'get' && preg_match('#^/v2/core/accounts/([^/]+)$#', $path, $matches) === 1) {
+            if ($this->failAccountRetrieve) {
+                return $this->respond([
+                    'error' => [
+                        'type' => 'invalid_request_error',
+                        'message' => 'Account retrieve failed.',
+                    ],
+                ], 400);
+            }
 
-            $account['charges_enabled'] = $this->chargesEnabled;
-            $account['details_submitted'] = $this->detailsSubmitted;
+            $this->accounts[$matches[1]] = $this->v2Account($matches[1]);
 
-            $this->accounts[$matches[1]] = $account;
-
-            return $this->respond($account);
+            return $this->respond($this->accounts[$matches[1]]);
         }
 
-        if ($method === 'post' && $path === '/v1/account_links') {
+        if ($method === 'post' && $path === '/v2/core/account_links') {
             return $this->respond([
-                'object' => 'account_link',
-                'url' => 'https://connect.stripe.test/'.$params['account'],
-                'expires_at' => time() + 300,
+                'object' => 'v2.core.account_link',
+                'account' => $params['account'] ?? null,
+                'created' => '2026-01-01T00:00:00.000Z',
+                'expires_at' => '2026-01-01T00:05:00.000Z',
+                'livemode' => false,
+                'url' => 'https://connect.stripe.test/'.($params['account'] ?? ''),
+                'use_case' => $params['use_case'] ?? [],
             ]);
         }
 
@@ -128,6 +126,47 @@ class FakeStripeHttpClient implements ClientInterface
                 'message' => "Unhandled fake Stripe request: {$method} {$path}",
             ],
         ], 400);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function v2Account(string $id): array
+    {
+        return [
+            'id' => $id,
+            'object' => 'v2.core.account',
+            'dashboard' => 'express',
+            'contact_email' => null,
+            'display_name' => null,
+            'configuration' => [
+                'merchant' => [
+                    'capabilities' => [
+                        'card_payments' => [
+                            'status' => $this->cardPaymentsStatus,
+                            'status_details' => $this->cardPaymentsStatusDetails,
+                        ],
+                        'stripe_balance' => [
+                            'payouts' => ['status' => $this->cardPaymentsStatus, 'status_details' => []],
+                        ],
+                    ],
+                ],
+                'recipient' => [
+                    'capabilities' => [
+                        'stripe_balance' => [
+                            'stripe_transfers' => ['status' => $this->stripeTransfersStatus, 'status_details' => []],
+                        ],
+                    ],
+                ],
+            ],
+            'requirements' => ['entries' => $this->requirementEntries],
+            'defaults' => [
+                'responsibilities' => [
+                    'fees_collector' => 'application',
+                    'losses_collector' => 'application',
+                ],
+            ],
+        ];
     }
 
     /**

@@ -14,7 +14,7 @@ class StripeConnect extends Component
 {
     public Organiser $organiser;
 
-    /** @var array{currently_due: array<int, string>, eventually_due: array<int, string>, disabled_reason: ?string} */
+    /** @var array{currently_due: array<int, array{description: string, awaiting_action_from: ?string, errors: array<int, string>}>, eventually_due: array<int, array{description: string, awaiting_action_from: ?string, errors: array<int, string>}>, disabled_reason: ?string} */
     public array $requirements = [];
 
     public function mount(Organiser $organiser): void

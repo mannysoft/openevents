@@ -79,18 +79,35 @@
             <x-ui.card title="Outstanding requirements">
                 @if ($requirements['disabled_reason'])
                     <p class="mb-4 rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
-                        Stripe has restricted this account: {{ $requirements['disabled_reason'] }}
+                        Stripe has restricted this account: {{ \Illuminate\Support\Str::headline(str_replace(['.', '_'], ' ', $requirements['disabled_reason'])) }}
                     </p>
                 @endif
 
-                @if (empty($requirements['currently_due']))
+                @if (empty($requirements['currently_due']) && empty($requirements['eventually_due']))
                     <p class="text-sm text-slate-600">No outstanding requirements. You are all set.</p>
                 @else
-                    <ul class="list-inside list-disc space-y-1 text-sm text-slate-700">
-                        @foreach ($requirements['currently_due'] as $field)
-                            <li>{{ \Illuminate\Support\Str::headline(str_replace('.', ' ', $field)) }} <span class="font-mono text-xs text-slate-400">{{ $field }}</span></li>
-                        @endforeach
-                    </ul>
+                    @foreach (['currently_due' => 'Required now', 'eventually_due' => 'Required later'] as $bucket => $heading)
+                        @if (! empty($requirements[$bucket]))
+                            <h3 class="text-sm font-medium text-slate-900 {{ $loop->first ? '' : 'mt-5' }}">{{ $heading }}</h3>
+
+                            <ul class="mt-2 list-inside list-disc space-y-2 text-sm text-slate-700">
+                                @foreach ($requirements[$bucket] as $requirement)
+                                    <li>
+                                        {{ \Illuminate\Support\Str::headline(str_replace(['.', '_'], ' ', $requirement['description'])) }}
+
+                                        @if ($requirement['awaiting_action_from'] === 'stripe')
+                                            <span class="ml-1 text-xs text-slate-400">Stripe is reviewing this</span>
+                                        @endif
+
+                                        @foreach ($requirement['errors'] as $error)
+                                            <span class="mt-1 block font-mono text-xs text-rose-700">{{ $error }}</span>
+                                        @endforeach
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    @endforeach
+
                     <p class="mt-4 text-sm text-slate-500">
                         Continue onboarding with Stripe to provide these details.
                     </p>

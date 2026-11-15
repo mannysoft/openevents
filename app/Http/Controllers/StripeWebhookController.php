@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Event as StripeEvent;
+use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Webhook;
 
@@ -105,14 +106,19 @@ class StripeWebhookController extends Controller
 
     private function accountUpdated(StripeEvent $event, ConnectService $connect): void
     {
-        $account = $event->data->object;
-
         $organiser = Organiser::query()
-            ->where('stripe_account_id', $account->id)
+            ->where('stripe_account_id', $event->data->object->id)
             ->first();
 
-        if ($organiser) {
-            $connect->applyAccount($organiser, $account);
+        if (! $organiser) {
+            return;
+        }
+
+        try {
+            // The event only signals a change; Accounts v2 is the source of truth.
+            $connect->refreshStatus($organiser);
+        } catch (ApiErrorException $e) {
+            report($e);
         }
     }
 
